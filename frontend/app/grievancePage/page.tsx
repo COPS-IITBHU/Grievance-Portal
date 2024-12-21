@@ -54,7 +54,26 @@ function GrievancePage() {
     setSelectedImages([]);
   };
 
+  function Navbar() {
+    return (
+      <nav>
+        <div className="flex justify-between items-center bg-blue-500 p-2 shadow-lg">
+          <a href="/" className="flex items-center gap-3 ml-6">
+            <img
+              src="/IITBHU_LOGO.png"
+              alt="IIT BHU Logo"
+              className="h-16 w-16"
+            />
+          </a>
+        </div>
+      </nav>
+    );
+  }
+  
+
   return (
+    <>
+    <Navbar />
     <div className="min-h-screen flex items-center justify-center p-4">
       <div
         className="w-full max-w-2xl bg-[#fcffdf] drop-shadow-lg rounded-lg shadow-md shadow-[#864e82] p-8"
@@ -187,6 +206,7 @@ function GrievancePage() {
         </form>
       </div>
     </div>
+    </>
   );
 }
 

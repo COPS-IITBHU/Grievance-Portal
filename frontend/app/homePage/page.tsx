@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import GrievanceCard from '@/components/GrievanceCard';
 import axios from 'axios';
+import Navbar from '@/components/Navbar';
 
 export default function Home() {
   const [message, setMessage] = useState('');
@@ -24,6 +25,8 @@ export default function Home() {
   }
 
   return (
+    <>
+    <Navbar />
     <div className='flex flex-col items-center mt-10' >
       <GrievanceCard {...props}/>
       <GrievanceCard {...props}/>
@@ -31,5 +34,6 @@ export default function Home() {
       <GrievanceCard {...props}/>
       {message}
     </div>
+    </>
   );
 }
