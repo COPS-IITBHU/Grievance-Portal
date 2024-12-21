@@ -8,7 +8,8 @@ export default function Home() {
 
   useEffect(() => {
     // Fetch data from backend API
-    axios.get('http://localhost:5000/')
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+    axios.get(`${backendUrl}/`)
       .then(response => setMessage(response.data))
       .catch(error => console.log(error));
   }, []);
@@ -28,6 +29,7 @@ export default function Home() {
       <GrievanceCard {...props}/>
       <GrievanceCard {...props}/>
       <GrievanceCard {...props}/>
+      {message}
     </div>
   );
 }

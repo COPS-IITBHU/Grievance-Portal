@@ -3,10 +3,16 @@
   "version": "1.0.0",
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "cd backend && node server.js",
+    "server": "cd backend && ts-node-dev --respawn --transpile-only server.ts",
     "client": "cd frontend && npm run dev"
   },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
   "devDependencies": {
-    "concurrently": "^9.1.0"
+    "concurrently": "^9.1.0",
+    "nodemon": "^3.1.9",
+    "ts-node-dev": "^2.0.0"
   }
 }
