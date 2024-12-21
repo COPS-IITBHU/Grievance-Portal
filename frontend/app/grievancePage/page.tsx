@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 
 function GrievancePage() {
   const {
@@ -9,17 +9,55 @@ function GrievancePage() {
     reset,
     formState: { errors },
   } = useForm();
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
-  const onSubmit = (data: any) => {
+  const tagOptions = [
+    "Urgent",
+    "Maintenance",
+    "Safety",
+    "Academic",
+    "Hostel",
+    "Technical",
+    "Other",
+  ]; 
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags((prevTags) =>
+      prevTags.includes(tag)
+        ? prevTags.filter((t) => t !== tag)
+        : [...prevTags, tag] 
+    );
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      setSelectedImages((prevImages) => [...prevImages, ...filesArray]);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setSelectedImages((prevImages) =>
+      prevImages.filter((_, i) => i !== index)
+    );
+  };
+
+   const onSubmit = (data: any) => {
+    data.tags = selectedTags;
+    data.images = selectedImages;
     console.log("Submitted Data:", data);
+
     alert("Grievance submitted successfully!");
     reset();
+    setSelectedTags([]);
+    setSelectedImages([]);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div
-        className="w-full max-w-2xl bg-[#fcffdf] drop-shadow-lg rounded-lg p-8"
+        className="w-full max-w-2xl bg-[#fcffdf] drop-shadow-lg rounded-lg shadow-md shadow-[#864e82] p-8"
         style={{ border: "1px solid #643861" }}
       >
         <h1
@@ -29,7 +67,6 @@ function GrievancePage() {
           Grievance Form
         </h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-
           <div>
             <label
               htmlFor="heading"
@@ -66,30 +103,35 @@ function GrievancePage() {
               className={`w-full border rounded-md px-3 py-2 ${
                 errors.description ? "border-red-500" : "border-gray-300"
               }`}
-              {...register("description", { required: "description is required" })}
+              {...register("description", { required: "Description is required" })}
             ></textarea>
           </div>
 
           <div>
-            <label
-              htmlFor="tags"
-              className="block text-md font-medium mb-1"
-              style={{ color: "black" }}
-            >
-              Tags (comma-separated)
+            <label className="block text-md font-medium mb-2" style={{ color: "black" }}>
+              Tags
             </label>
-            <input
-              id="tags"
-              type="text"
-              className={`w-full border rounded-md px-3 py-2 ${
-                errors.tags ? "border-red-500" : "border-gray-300"
-              }`}
-            />
-            
+            <div className="flex flex-wrap gap-2">
+              {tagOptions.map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  className={`px-3 py-2 rounded-full text-sm font-medium transition-all ${
+                    selectedTags.includes(tag)
+                      ? "bg-[#643861] text-white"
+                      : "bg-gray-200 text-black"
+                  }`}
+                  onClick={() => toggleTag(tag)}
+                >
+                  {selectedTags.includes(tag) && "🗸 "}
+                  {tag}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div>
-            <label
+             <label
               htmlFor="images"
               className="block text-sm font-medium mb-1"
               style={{ color: "black" }}
@@ -100,10 +142,30 @@ function GrievancePage() {
               id="images"
               type="file"
               className="w-full border rounded-md px-3 py-2"
-              {...register("images")}
+              onChange={handleImageChange}
               multiple
             />
+            {selectedImages.length > 0 && (
+              <div className="mt-3 space-y-1 grid grid-cols-2 items-center gap-1">
+                {selectedImages.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between bg-gray-200 px-2 py-1 rounded-md"
+                  >
+                    <span className="text-[12px] text-black">{file.name}</span>
+                    <button
+                      type="button"
+                      className="text-[#643861] hover:text-[#d35c13]"
+                      onClick={() => removeImage(index)}
+                    >
+                    ✖
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
+
           <div className="flex justify-between items-center space-x-4">
             <button
               type="submit"
@@ -114,7 +176,10 @@ function GrievancePage() {
             <button
               type="button"
               className="w-full bg-gray-300 hover:bg-zinc-400 text-black py-2 rounded-md"
-              onClick={() => reset()}
+              onClick={() => {
+                reset();
+                setSelectedTags([]); 
+              }}
             >
               Reset
             </button>
