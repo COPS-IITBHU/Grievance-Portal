@@ -6,7 +6,12 @@
     "server": "cd backend && node server.js",
     "client": "cd frontend && npm run dev"
   },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
   "devDependencies": {
-    "concurrently": "^9.1.0"
+    "concurrently": "^9.1.0",
+    "nodemon": "^3.1.9"
   }
 }
