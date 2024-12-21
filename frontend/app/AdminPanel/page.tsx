@@ -23,7 +23,7 @@ export default function Page() {
 
     const updateRowData = (updatedData: any) => {
       setRowData((prevData) =>
-        prevData.map((row, idx) =>
+        prevData.map((row) =>
           row.Heading === updatedData.Heading &&
           row.Content === updatedData.Content
             ? updatedData
@@ -34,16 +34,16 @@ export default function Page() {
 
     if (data.Status === "Pending") {
       return (
-        <div className="flex items-center justify-center space-x-4 h-full ">
+        <div className="flex items-center justify-center space-x-4 h-full">
           <button
             onClick={handleAccept}
-            className="bg-green-800 hover:bg-green-700 text-white font-semibold px-4 py-2  shadow-md transition duration-300 flex items-center justify-center  rounded-full h-8 text-sm my-auto"
+            className="bg-green-800 hover:bg-green-700 text-white font-semibold px-4 py-2 shadow-md transition duration-300 flex items-center justify-center rounded-full h-8 text-sm my-auto"
           >
             Approve
           </button>
           <button
             onClick={handleReject}
-            className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2  shadow-md transition duration-300 rounded-full h-8 text-sm my-auto flex items-center justify-center"
+            className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 shadow-md transition duration-300 rounded-full h-8 text-sm my-auto flex items-center justify-center"
           >
             Reject
           </button>
@@ -51,7 +51,7 @@ export default function Page() {
       );
     } else if (data.Status === "Approved") {
       return (
-        <div className="w-full flex  items-center justify-center h-full">
+        <div className="w-full flex items-center justify-center h-full">
           <button className="bg-green-600 flex items-center justify-center text-white font-semibold px-4 py-2 rounded-full h-8 text-sm my-auto cursor-default">
             Approved
           </button>
@@ -59,7 +59,7 @@ export default function Page() {
       );
     } else if (data.Status === "Rejected") {
       return (
-        <div className="w-full  flex  items-center justify-center h-full">
+        <div className="w-full flex items-center justify-center h-full">
           <button className="bg-red-600 flex items-center justify-center text-white font-semibold px-4 py-2 rounded-full h-8 text-sm my-auto cursor-default">
             Rejected
           </button>
@@ -69,10 +69,73 @@ export default function Page() {
     return null;
   };
 
+  const TagsCellRenderer = (props: any) => {
+    const { data, api, node } = props;
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedTags, setEditedTags] = useState(data.Tags);
+
+    const handleDoubleClick = () => {
+      setIsEditing(true);
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setEditedTags(e.target.value);
+    };
+
+    const handleBlurOrEnter = (e: React.KeyboardEvent | React.FocusEvent) => {
+      if (e.type === "blur" || (e as React.KeyboardEvent).key === "Enter") {
+        setIsEditing(false);
+        if (editedTags !== data.Tags) {
+          data.Tags = editedTags; // Update the tags in the row data
+          api.refreshCells({ rowNodes: [node], force: true }); // Refresh the cell
+          props.api.dispatchEvent({
+            type: "cellValueChanged",
+            node,
+            data,
+          }); // Trigger the `onCellValueChanged` event
+        }
+      }
+    };
+
+    return isEditing ? (
+      <input
+        type="text"
+        value={editedTags}
+        onChange={handleInputChange}
+        onBlur={handleBlurOrEnter}
+        onKeyDown={handleBlurOrEnter}
+        className="w-full px-2 py-1 text-sm rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        autoFocus
+      />
+    ) : (
+      <div
+        className="flex items-center justify-center h-full flex-wrap "
+        onDoubleClick={handleDoubleClick}
+      >
+        {data.Tags.split(",").map((tag: string) => (
+          <button
+            key={tag}
+            type="button"
+            className="px-3 py-2 rounded-full text-sm font-medium transition-all bg-gray-200  text-black my-6 mx-5"
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
+    );
+  };
+  const contentCellRenderer = (props: any) => {
+    const { data } = props;
+    return (
+      <div className="flex flex-col w-full h-full">
+        <h2 className="text-lg font-semibold text-gray-800">{data.Heading}</h2>
+        <p className="text-sm text-gray-600 mt-2">{data.Content}</p>
+      </div>
+    );
+  };
   const [colDefs, setColDefs] = useState<ColDef[]>([
-    { field: "Heading" },
-    { field: "Content", flex: 1 },
-    { field: "Tags" },
+    { field: "Grievance", flex: 2, cellRenderer: contentCellRenderer },
+    { field: "Tags",flex:1.5, cellRenderer: TagsCellRenderer },
     { field: "Status" },
     { field: "Votes" },
     { field: "CreatedAt" },
@@ -91,7 +154,6 @@ export default function Page() {
       Status: "Pending",
       Votes: 12,
       CreatedAt: "2023-09-15",
-      Action: "Approve/Reject",
     },
     {
       Heading: "Wi-Fi Connectivity Issues",
@@ -100,7 +162,6 @@ export default function Page() {
       Status: "Approved",
       Votes: 30,
       CreatedAt: "2023-09-10",
-      Action: "Approve/Reject",
     },
     {
       Heading: "Cafeteria Food Quality",
@@ -109,7 +170,6 @@ export default function Page() {
       Status: "Rejected",
       Votes: 25,
       CreatedAt: "2023-09-20",
-      Action: "Approve/Reject",
     },
     {
       Heading: "Air Conditioning in Lecture Hall",
@@ -119,18 +179,33 @@ export default function Page() {
       Status: "Pending",
       Votes: 18,
       CreatedAt: "2023-09-18",
-      Action: "Approve/Reject",
     },
     {
       Heading: "Library Book Request",
       Content: "Requesting new books for the computer science section.",
-      Tags: "Library, Books",
+      Tags: "Library, Books, Engineering, Science, Math",
       Status: "Pending",
       Votes: 22,
       CreatedAt: "2023-09-25",
-      Action: "Approve/Reject",
     },
   ]);
+
+  const onCellValueChanged = (params: any) => {
+    const updatedData = params.data;
+    setRowData((prevData) =>
+      prevData.map((row) =>
+        row.Heading === updatedData.Heading &&
+        row.Content === updatedData.Content
+          ? updatedData
+          : row
+      )
+    );
+  };
+  const getRowHeight = (params: any) => {
+    const tags = params.data.Tags.split(",").length;
+    const baseHeight = 50; 
+  return baseHeight + tags * 5;
+  };
 
   return (
     <div className="flex flex-col h-full w-full">
@@ -159,11 +234,11 @@ export default function Page() {
           </div>
         </div>
 
-        {/* table */}
+        {/* Table */}
 
         <div className="w-full p-4">
           <div
-            className="ag-theme-quartz "
+            className="ag-theme-quartz"
             style={{ height: 500, width: "100%" }}
           >
             <AgGridReact
@@ -171,6 +246,8 @@ export default function Page() {
               columnDefs={colDefs}
               modules={[ClientSideRowModelModule]}
               theme={"legacy"}
+              onCellValueChanged={onCellValueChanged}
+              getRowHeight={getRowHeight}
             />
           </div>
         </div>
