@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "body-parser": "^1.20.3",
+    "cloudinary": "^1.41.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
@@ -20,18 +21,19 @@
     "mongodb": "^6.12.0",
     "mongoose": "^8.9.2",
     "multer": "^1.4.5-lts.1",
+    "multer-storage-cloudinary": "^4.0.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9",
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/mongodb": "^4.0.7",
     "@types/mongoose": "^5.11.97",
-    "@types/multer": "^1.4.7",
+    "@types/multer": "^1.4.12",
     "@types/passport": "^1.0.7",
-    "@types/passport-google-oauth20": "^2.0.10"
+    "@types/passport-google-oauth20": "^2.0.10",
+    "nodemon": "^3.1.9"
   }
 }
