@@ -59,7 +59,7 @@ function GrievancePage() {
   function Navbar() {
     return (
       <nav>
-        <div className="flex justify-between items-center bg-[#106ea8] p-2 shadow-lg">
+        <div className="flex justify-between items-center bg-[#703f6c] p-2 shadow-lg">
           <Link href="/" className="flex items-center gap-3 ml-6">
             <Image
               src="/IITBHU_LOGO.png"
