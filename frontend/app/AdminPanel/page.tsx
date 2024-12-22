@@ -2,9 +2,11 @@
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import Head from "next/head";
 import { useState } from "react";
 import { ClientSideRowModelModule, ColDef } from "ag-grid-community";
+import Image from "next/image";
+import Link from "next/link";
+import LOGO from "@/public/IITBHU_LOGO.png";
 
 export default function Page() {
   const ActionCellRenderer = (props: any) => {
@@ -52,7 +54,7 @@ export default function Page() {
     } else if (data.Status === "Approved") {
       return (
         <div className="w-full flex items-center justify-center h-full">
-          <button className="bg-green-600 flex items-center justify-center text-white font-semibold px-4 py-2 rounded-full h-8 text-sm my-auto cursor-default">
+          <button className="bg-[#5d3459] flex items-center justify-center text-white font-semibold px-4 py-2 rounded-full h-8 text-sm my-auto cursor-default">
             Approved
           </button>
         </div>
@@ -60,7 +62,7 @@ export default function Page() {
     } else if (data.Status === "Rejected") {
       return (
         <div className="w-full flex items-center justify-center h-full">
-          <button className="bg-red-600 flex items-center justify-center text-white font-semibold px-4 py-2 rounded-full h-8 text-sm my-auto cursor-default">
+          <button className="bg-red-800 flex items-center justify-center text-white font-semibold px-4 py-2 rounded-full h-8 text-sm my-auto cursor-default">
             Rejected
           </button>
         </div>
@@ -86,13 +88,13 @@ export default function Page() {
       if (e.type === "blur" || (e as React.KeyboardEvent).key === "Enter") {
         setIsEditing(false);
         if (editedTags !== data.Tags) {
-          data.Tags = editedTags; // Update the tags in the row data
-          api.refreshCells({ rowNodes: [node], force: true }); // Refresh the cell
+          data.Tags = editedTags; 
+          api.refreshCells({ rowNodes: [node], force: true }); 
           props.api.dispatchEvent({
             type: "cellValueChanged",
             node,
             data,
-          }); // Trigger the `onCellValueChanged` event
+          }); 
         }
       }
     };
@@ -104,19 +106,19 @@ export default function Page() {
         onChange={handleInputChange}
         onBlur={handleBlurOrEnter}
         onKeyDown={handleBlurOrEnter}
-        className="w-full px-2 py-1 text-sm rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-2 py-1 text-sm rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#573054]"
         autoFocus
       />
     ) : (
       <div
-        className="flex items-center justify-center h-full flex-wrap "
+        className="flex items-center justify-center h-full flex-wrap"
         onDoubleClick={handleDoubleClick}
       >
         {data.Tags.split(",").map((tag: string) => (
           <button
             key={tag}
             type="button"
-            className="px-3 py-2 rounded-full text-sm font-medium transition-all bg-gray-200  text-black my-6 mx-5"
+            className="px-2 py-2 rounded-full text-sm font-medium transition-all bg-gray-300  text-black my-5 mx-5"
           >
             {tag}
           </button>
@@ -207,39 +209,57 @@ export default function Page() {
   return baseHeight + tags * 5;
   };
 
+  function Navbar() {
+    return (
+      <nav>
+        <div className="flex justify-between items-center bg-[#106ea8] p-2 shadow-lg">
+          <Link href="/" className="flex items-center gap-3 ml-6">
+            <Image
+              src={LOGO}
+              alt="IIT BHU Logo"
+              width={64} 
+              height={64}
+              quality={100}
+            />
+          </Link>
+        </div>
+      </nav>
+    );
+  }
+
   return (
+    <>
+    <Navbar />
     <div className="flex flex-col h-full w-full">
-      <div className="w-full flex flex-col mt-10">
-        <div className="w-[50%] flex items-center flex-col justify-evenly border-2 border-gray-300 rounded-xl p-6 mx-auto my-10 shadow-lg ">
-          <h1 className="text-center text-4xl font-bold text-gray-800 mb-6">
+      <div className="w-full flex flex-col mt-6">
+        <div className="w-[50%] flex items-center flex-col justify-evenly border-2 border-gray-300 rounded-xl p-4 mx-auto my-10 shadow-lg bg-[#fcffdf]">
+          <h1 className="text-center text-4xl font-bold text-gray-800 mb-4">
             Approval Status
           </h1>
-          <div className="flex flex-row justify-evenly w-full mt-6 space-x-4">
+          <div className="flex flex-row justify-evenly w-full mt-4 space-x-4">
             <div className="flex flex-col items-center justify-center p-4 rounded-lg ">
               <h2 className="text-xl text-gray-600 font-semibold">Requested</h2>
               <span className="text-4xl mt-3 text-gray-800 font-bold">255</span>
             </div>
             <div className="flex flex-col items-center justify-center p-4 rounded-lg ">
               <h2 className="text-xl text-gray-600 font-semibold">Approved</h2>
-              <span className="text-4xl mt-3 text-gray-800 font-bold">180</span>
+              <span className="text-4xl mt-3 text-green-700 font-bold">180</span>
             </div>
             <div className="flex flex-col items-center justify-center p-4 rounded-lg ">
               <h2 className="text-xl text-gray-600 font-semibold">Rejected</h2>
-              <span className="text-4xl mt-3 text-gray-800 font-bold">75</span>
+              <span className="text-4xl mt-3 text-red-700 font-bold">75</span>
             </div>
             <div className="flex flex-col items-center justify-center p-4 rounded-lg ">
               <h2 className="text-xl text-gray-600 font-semibold">Pending</h2>
-              <span className="text-4xl mt-3 text-gray-800 font-bold">50</span>
+              <span className="text-4xl mt-3 text-amber-600 font-bold">50</span>
             </div>
           </div>
         </div>
 
-        {/* Table */}
-
         <div className="w-full p-4">
           <div
             className="ag-theme-quartz"
-            style={{ height: 500, width: "100%" }}
+            style={{ height: 500, width: "100%", backgroundColor: "#fcffdf" }}
           >
             <AgGridReact
               rowData={rowData}
@@ -253,5 +273,6 @@ export default function Page() {
         </div>
       </div>
     </div>
+  </>
   );
 }
