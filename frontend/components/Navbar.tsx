@@ -20,7 +20,7 @@ function Navbar() {
         <div className="mr-6">
           <a
             href="/grievancePage"
-            className="text-white bg-[#106ea8] hover:bg-[#2878a9] py-2 px-4 rounded-lg font-semibold transition duration-300 shadow-md"
+            className="text-black bg-[#fcffdf] hover:bg-[#e0e89a] border-1 border-black border-solid py-2 px-4 rounded-lg font-medium transition duration-300 shadow-md"
           >
             Submit Grievances
           </a>
