@@ -53,4 +53,28 @@ const authService = {
   }
 };
 
-export { grievanceService as grievanceApi, authService };
+const adminService = {
+  getAllGrievances: async (): Promise<Grievance[]> => {
+    const response = await api.get('/admin/grievances');
+    return response.data;
+  },
+
+  verifyGrievance: async (id: string, isPending: boolean, tags?: string[]): Promise<Grievance> => {
+    const response = await api.put(`/admin/${id}/verify`, { 
+      isPending,
+      tags: tags ? tags : undefined
+    });
+    return response.data;
+  },
+
+  updateProgress: async (id: string, images: File[]): Promise<Grievance> => {
+    const formData = new FormData();
+    images.forEach(image => {
+      formData.append('progressImages', image);
+    });
+    const response = await api.put(`/admin/${id}/progress`, formData);
+    return response.data;
+  }
+};
+
+export { grievanceService, authService, adminService };

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import GrievanceCard from '@/components/GrievanceCard';
 import Navbar from '@/components/Navbar';
-import { grievanceApi, authService } from '@/services/api';
+import { grievanceService, authService } from '@/services/api';
 import { Grievance } from '@/types/grievance';
 
 export default function Home() {
@@ -20,7 +20,7 @@ export default function Home() {
 
     const fetchGrievances = async () => {
       try {
-        const data = await grievanceApi.getAll();
+        const data = await grievanceService.getAll();
         setGrievances(data);
       } catch (err) {
         setError('Failed to fetch grievances');

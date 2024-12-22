@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import Link from "next/link";
-import { grievanceApi } from '@/services/api';
+import { grievanceService } from '@/services/api';
 import { useRouter } from 'next/navigation';
 
 function GrievancePage() {
@@ -56,7 +56,7 @@ function GrievancePage() {
       selectedTags.forEach(tag => formData.append('tags[]', tag));
       selectedImages.forEach(image => formData.append('images', image));
 
-      await grievanceApi.create(formData);
+      await grievanceService.create(formData);
       alert("Grievance submitted successfully!");
       router.push('/homePage');
     } catch (error) {

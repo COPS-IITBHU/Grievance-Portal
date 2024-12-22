@@ -34,4 +34,9 @@ adminRouter.put('/:id/progress', authMiddleware, upload.array('progressImages', 
   }
 });
 
+adminRouter.get('/grievances', authMiddleware, async (req, res) => {
+  const grievances = await Grievance.find();
+  res.json(grievances);
+});
+
 export default adminRouter;
