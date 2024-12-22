@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import Image from "next/image";
+import Link from "next/link";
 
 function GrievancePage() {
   const {
@@ -53,18 +55,20 @@ function GrievancePage() {
     setSelectedTags([]);
     setSelectedImages([]);
   };
-
+  
   function Navbar() {
     return (
       <nav>
-        <div className="flex justify-between items-center bg-blue-500 p-2 shadow-lg">
-          <a href="/" className="flex items-center gap-3 ml-6">
-            <img
+        <div className="flex justify-between items-center bg-[#106ea8] p-2 shadow-lg">
+          <Link href="/" className="flex items-center gap-3 ml-6">
+            <Image
               src="/IITBHU_LOGO.png"
               alt="IIT BHU Logo"
-              className="h-16 w-16"
+              width={64} 
+              height={64}
+              className="h-16 w-16" 
             />
-          </a>
+          </Link>
         </div>
       </nav>
     );
@@ -74,9 +78,9 @@ function GrievancePage() {
   return (
     <>
     <Navbar />
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-3">
       <div
-        className="w-full max-w-2xl bg-[#fcffdf] drop-shadow-lg rounded-lg shadow-md shadow-[#864e82] p-8"
+        className="w-full max-w-2xl bg-[#fcffdf] drop-shadow-lg rounded-lg shadow-md shadow-[#864e82] p-6"
         style={{ border: "1px solid #643861" }}
       >
         <h1
@@ -105,7 +109,7 @@ function GrievancePage() {
               {...register("heading", { required: "Heading is required" })}
             />
           </div>
-
+          
           <div>
             <label
               htmlFor="content"
