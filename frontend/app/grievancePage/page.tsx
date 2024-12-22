@@ -3,8 +3,11 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import Link from "next/link";
+import { grievanceService } from '@/services/api';
+import { useRouter } from 'next/navigation';
 
 function GrievancePage() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -45,17 +48,23 @@ function GrievancePage() {
     );
   };
 
-   const onSubmit = (data: any) => {
-    data.tags = selectedTags;
-    data.images = selectedImages;
-    console.log("Submitted Data:", data);
+  const onSubmit = async (data: any) => {
+    try {
+      const formData = new FormData();
+      formData.append('heading', data.heading);
+      formData.append('content', data.description);
+      selectedTags.forEach(tag => formData.append('tags[]', tag));
+      selectedImages.forEach(image => formData.append('images', image));
 
-    alert("Grievance submitted successfully!");
-    reset();
-    setSelectedTags([]);
-    setSelectedImages([]);
+      await grievanceService.create(formData);
+      alert("Grievance submitted successfully!");
+      router.push('/homePage');
+    } catch (error) {
+      console.error('Error submitting grievance:', error);
+      alert("Failed to submit grievance");
+    }
   };
-  
+
   function Navbar() {
     return (
       <nav>

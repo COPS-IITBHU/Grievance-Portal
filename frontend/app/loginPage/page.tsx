@@ -1,18 +1,28 @@
 "use client";
 
-import React from 'react'
+import React, { useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation'
+import { authService } from '@/services/api';
 
-function loginPage() {
+function LoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const token = searchParams.get('token');
+    if (token) {
+      authService.setToken(token);
+      router.push('/');
+    }
+  }, [router]);
+
   return (
     <div className="min-h-screen flex items-center justify-center ">
       <div className="bg-[#fcffdf] rounded-lg shadow-lg p-8 w-full max-w-md">
         <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">Login</h1>
         <button
           className="w-full flex items-center justify-center bg-[#643861] hover:bg-[#d35c13] text-white py-3 px-4 rounded-lg transition"
-          onClick={() => {
-            // Handle Google login logic here
-            alert('Login with Google Clicked');
-          }}
+          onClick={() => authService.loginWithGoogle()}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +51,7 @@ function loginPage() {
         </button>
       </div>
     </div>
-  )
+  );
 }
 
-export default loginPage
+export default LoginPage;

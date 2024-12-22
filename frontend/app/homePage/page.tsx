@@ -1,39 +1,57 @@
 "use client";
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import GrievanceCard from '@/components/GrievanceCard';
-import axios from 'axios';
 import Navbar from '@/components/Navbar';
+import { grievanceService, authService } from '@/services/api';
+import { Grievance } from '@/types/grievance';
 
 export default function Home() {
-  const [message, setMessage] = useState('');
+  const [grievances, setGrievances] = useState<Grievance[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
-    // Fetch data from backend API
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
-    axios.get(`${backendUrl}/`)
-      .then(response => setMessage(response.data))
-      .catch(error => console.log(error));
-  }, []);
+    if (!authService.isLoggedIn()) {
+      router.push('/loginPage');
+      return;
+    }
 
-  const props = {
-    title: 'Test Title',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    status: false,
-    votes: 0,
-    tags: ['tag 1', 'tag 2', 'tag 3'],
-    adminComments: ['comm 1', 'comm 2', 'comm 3'],
-  }
+    const fetchGrievances = async () => {
+      try {
+        const data = await grievanceService.getAll();
+        setGrievances(data);
+      } catch (err) {
+        setError('Failed to fetch grievances');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGrievances();
+  }, [router]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <>
-    <Navbar />
-    <div className='flex flex-col items-center mt-10' >
-      <GrievanceCard {...props}/>
-      <GrievanceCard {...props}/>
-      <GrievanceCard {...props}/>
-      <GrievanceCard {...props}/>
-      {message}
-    </div>
+      <Navbar />
+      <div className='flex flex-col items-center mt-10'>
+        {grievances.map((grievance) => (
+          <GrievanceCard
+            key={grievance._id}
+            title={grievance.heading}
+            description={grievance.content}
+            status={grievance.isComplete}
+            votes={grievance.upvote_count}
+            tags={grievance.tags}
+            adminComments={[]}
+          />
+        ))}
+      </div>
     </>
   );
 }
