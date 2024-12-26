@@ -18,15 +18,18 @@ function GrievancePage() {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
   const tagOptions = [
-    "Urgent",
-    "Maintenance",
-    "Safety",
-    "Academic",
     "Hostel",
-    "Technical",
+    "Security",
+    "Web",
+    "Department",
+    "Academics",
+    "Infrastructure",
+    "Council",
+    "Cells",
+    "Festival",
     "Other",
   ]; 
-
+  
   const toggleTag = (tag: string) => {
     setSelectedTags((prevTags) =>
       prevTags.includes(tag)
