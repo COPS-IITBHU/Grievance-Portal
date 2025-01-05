@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { grievanceService } from '@/services/api';
 import { useRouter } from 'next/navigation';
+import Footer from "@/components/Footer";
 
 function GrievancePage() {
   const router = useRouter();
@@ -92,7 +93,7 @@ function GrievancePage() {
     <Navbar />
     <div className="min-h-screen flex items-center justify-center p-3">
       <div
-        className="w-full max-w-2xl bg-[#fcffdf] drop-shadow-lg rounded-lg shadow-md shadow-[#864e82] p-6"
+        className="w-full max-w-2xl bg-[#fcffdf] drop-shadow-lg rounded-lg shadow-md shadow-[#864e82] p-6 mb-5"
         style={{ border: "1px solid #643861" }}
       >
         <h1
@@ -222,6 +223,7 @@ function GrievancePage() {
         </form>
       </div>
     </div>
+    <Footer />
     </>
   );
 }
