@@ -1,11 +1,11 @@
 import express from 'express';
 import authMiddleware from '../middlewares/authMiddleware';
 import { Grievance } from '../models/Grievance';
-import upload from '../middlewares/uploadMiddleware';
+import {uploadImages} from '../middlewares/uploadMiddleware';
 
 const grievanceRouter = express.Router();
 
-grievanceRouter.post('/', authMiddleware, upload.array('images', 5), async (req, res) => {
+grievanceRouter.post('/', authMiddleware, uploadImages, async (req, res) => {
   try {
     const { heading, content, tags } = req.body;
 
@@ -15,13 +15,14 @@ grievanceRouter.post('/', authMiddleware, upload.array('images', 5), async (req,
     const grievance = new Grievance({
       heading,
       content,
-      tags,
+      tags: Array.isArray(tags) ? tags : [tags], // Ensure tags is an array
       related_images: imageUrls,
     });
 
     await grievance.save();
     res.status(201).json(grievance);
   } catch (err) {
+    console.error('Error creating grievance:', err);
     res.status(500).json({ message: (err as Error).message });
   }
 });

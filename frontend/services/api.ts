@@ -5,6 +5,10 @@ const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
 
 const api = axios.create({
   baseURL: baseURL,
+  timeout: 30000,
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  },
 });
 
 api.interceptors.request.use((config) => {
@@ -22,13 +26,16 @@ const grievanceService = {
   },
 
   create: async (formData: FormData): Promise<Grievance> => {
-    const response = await api.post('/grievance', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return response.data;
-  }
+    try {
+      const response = await api.post('/grievance', formData);
+      return response.data;
+    } catch (error: any) {
+      if (error.code === 'ECONNABORTED') {
+        throw new Error('Request timed out. Please try again.');
+      }
+      throw error;
+    }
+  },
 };
 
 const authService = {

@@ -41,8 +41,20 @@ function GrievancePage() {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const filesArray = Array.from(e.target.files);
-      setSelectedImages((prevImages) => [...prevImages, ...filesArray]);
+      const files = Array.from(e.target.files);
+      
+      // Validate file types and sizes
+      const validFiles = files.filter(file => {
+        const isValidType = ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type);
+        const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB limit
+        return isValidType && isValidSize;
+      });
+  
+      if (validFiles.length !== files.length) {
+        alert('Some files were rejected. Please only upload JPG/PNG images under 5MB.');
+      }
+  
+      setSelectedImages(prev => [...prev, ...validFiles]);
     }
   };
 
@@ -58,14 +70,23 @@ function GrievancePage() {
       formData.append('heading', data.heading);
       formData.append('content', data.description);
       selectedTags.forEach(tag => formData.append('tags[]', tag));
-      selectedImages.forEach(image => formData.append('images', image));
+      selectedImages.forEach(image => {
+        formData.append('images', image);
+      });
 
       await grievanceService.create(formData);
+      reset();
+      setSelectedImages([]);
+      setSelectedTags([]);
       alert("Grievance submitted successfully!");
       router.push('/homePage');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting grievance:', error);
-      alert("Failed to submit grievance");
+      if (error.response?.status === 500) {
+        alert("Server error while uploading images. Please try with smaller images or fewer images.");
+      } else {
+        alert("Failed to submit grievance");
+      }
     }
   };
 
