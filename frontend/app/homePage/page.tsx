@@ -49,6 +49,8 @@ export default function Home() {
             status={grievance.isComplete}
             votes={grievance.upvote_count}
             tags={grievance.tags}
+            userImages={grievance.related_images}
+            adminImages={grievance.progress_images}
             adminComments={[]}
           />
         ))}
