@@ -35,13 +35,11 @@ function GrievanceCard(props: GrievanceCardProps) {
     };
 
     useEffect(() => {
-        if (props.description.length > 200) {
             if (props.description.length > 350) {
                 setDiscriptionSmall(props.description.substring(0, 490) + "...Read More");
             } else {
                 setDiscriptionSmall(props.description + "...Read More");
             }
-        }
     }, [props.description]);
     
     return (
