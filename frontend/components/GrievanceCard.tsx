@@ -43,17 +43,17 @@ function GrievanceCard(props: GrievanceCardProps) {
             }
         }
     }, [props.description]);
-
+    
     return (
         <div className='w-full md:w-[80%] p-4'>
-            <div className='flex flex-col bg-[#fcffdf] p-4 rounded-lg shadow-lg shadow-[#864e82] border-2 border-solid border-[#643861]'>
+            <div className='flex flex-col bg-[#fcffdf] p-4 rounded-lg shadow-md shadow-[#864e82] border-2 border-solid border-[#643861]'>
                 <div className='flex justify-between items-center'>
                     <div className='flex gap-5'>
                         <h1 className='font-semibold text-lg'>{props.title}</h1>
                         <p className='font-light'>{props.status ? '🟢 Resolved' : '🟡 Pending'}</p>
                     </div>
                     {expanded ? (
-                        <div onClick={handleExpandClick} className='text-sm h-full mr-4 text-black hover:cursor-pointer'>
+                        <div onClick={handleExpandClick} className='text-xl h-full mr-4 text-black hover:cursor-pointer font-extrabold'>
                             ↩
                         </div>
                     ) : (
@@ -86,7 +86,7 @@ function GrievanceCard(props: GrievanceCardProps) {
                         {props.userImages && (
                             <img src={props.userImages[0]} alt="userImage" className=' w-full md:w-40 md:h-20 mt-2 md:mr-4' />
                         )}
-                        <p className='text-sm text-gray-400 mt-2 md:mt-0 hover:cursor-pointer' onClick={handleExpandClick}>
+                        <p className='text-sm text-gray-500 mt-2 md:mt-0 hover:cursor-pointer' onClick={handleExpandClick}>
                             {discriptionSmall}
                         </p>
                     </div>
