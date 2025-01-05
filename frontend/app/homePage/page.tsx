@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import GrievanceCard from '@/components/GrievanceCard';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { grievanceService, authService } from '@/services/api';
 import { Grievance } from '@/types/grievance';
 
@@ -39,7 +40,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <div className='flex flex-col items-center mt-10'>
+      <div className='flex flex-col items-center mt-10 mb-5'>
         {grievances.map((grievance) => (
           <GrievanceCard
             key={grievance._id}
@@ -52,6 +53,7 @@ export default function Home() {
           />
         ))}
       </div>
+      <Footer />
     </>
   );
 }

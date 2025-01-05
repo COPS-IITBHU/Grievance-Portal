@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import LOGO from "@/public/IITBHU_LOGO.png";
 import { adminService } from "@/services/api";
+import Footer from "@/components/Footer";
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
@@ -168,7 +169,7 @@ export default function Page() {
   function Navbar() {
     return (
       <nav>
-        <div className="flex justify-between items-center bg-[#106ea8] p-2 shadow-lg">
+        <div className="flex justify-between items-center bg-[#703f6c] p-2 shadow-lg">
           <Link href="/" className="flex items-center gap-3 ml-6">
             <Image
               src={LOGO}
@@ -294,6 +295,7 @@ export default function Page() {
           </div>
         </div>
       )}
+      <Footer />
     </>
   );
 }
