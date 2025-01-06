@@ -3,8 +3,9 @@
 import React, { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation'
 import { authService } from '@/services/api';
+import { Suspense } from 'react';
 
-function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -51,6 +52,14 @@ function LoginPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
 
