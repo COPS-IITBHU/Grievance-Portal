@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import passport from 'passport';
 import session from 'express-session';
+import MongoStore from 'connect-mongo';
 import { configurePassport } from './config/passport';
 
 import authRouter from './routes/auth';
@@ -21,8 +22,8 @@ for (const envVar of requiredEnvVars) {
   }
 }
 
-connectDB();
-configurePassport();
+connectDB();  // MongoDB connection
+configurePassport();  // Passport configuration
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -31,9 +32,14 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 app.use(session({
-  secret: process.env.JWT_SECRET,
+  secret: process.env.JWT_SECRET as string,
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URL as string, // Use your MongoDB URL from environment variables
+    collectionName: 'sessions',
+    ttl: 14 * 24 * 60 * 60, // Session TTL in seconds (14 days)
+  }),
 }));
 app.use(passport.initialize());
 app.use(passport.session());

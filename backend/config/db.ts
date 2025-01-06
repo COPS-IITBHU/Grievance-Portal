@@ -2,10 +2,13 @@ import mongoose from 'mongoose';
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URL);
-    console.log("MongoDB connected");
+    if (!process.env.MONGODB_URL) {
+      throw new Error('MONGODB_URL not found');
+    }
+    await mongoose.connect(process.env.MONGODB_URL as string);
+    console.log('MongoDB connected');
   } catch (err) {
-    console.error(err.message);
+    console.error('MongoDB connection error:', err.message);
     process.exit(1);
   }
 };
