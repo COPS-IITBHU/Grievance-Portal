@@ -14,7 +14,7 @@ import adminRouter from './routes/admin';
 dotenv.config();
 
 // Validate environment variables first
-const requiredEnvVars = ['JWT_SECRET', 'MONGODB_URL', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET'];
+const requiredEnvVars = ['JWT_SECRET', 'MONGODB_URI', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET'];
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
     console.error(`Required environment variable ${envVar} not found`);
@@ -36,7 +36,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URL as string, // Use your MongoDB URL from environment variables
+    mongoUrl: process.env.MONGODB_URI as string, // Use your MongoDB URL from environment variables
     collectionName: 'sessions',
     ttl: 14 * 24 * 60 * 60, // Session TTL in seconds (14 days)
   }),
