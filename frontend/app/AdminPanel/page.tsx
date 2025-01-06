@@ -28,7 +28,7 @@ export default function Page() {
         data.Status = "Approved";
         props.api.refreshCells({ rowNodes: [props.node], force: true });
         updateRowData(data);
-        updateStats("Approved");
+        updateStats("approved");
         alert("Grievance approved successfully");
       } catch (error) {
         alert("Failed to approve grievance");
@@ -87,7 +87,7 @@ export default function Page() {
         setIsEditing(false);
         if (editedTags !== data.Tags) {
           try {
-            const tags = editedTags.split(',').map(tag => tag.trim());
+            const tags = editedTags.split(',').map((tag: string) => tag.trim());
             await adminService.verifyGrievance(data._id, data.Status === "Pending", tags);
             data.Tags = editedTags;
             api.refreshCells({ rowNodes: [node], force: true });
@@ -147,7 +147,17 @@ export default function Page() {
       cellRenderer: ActionCellRenderer,
     },
   ]);
-  const [rowData, setRowData] = useState([]);
+  interface Grievance {
+    _id: string;
+    Heading: string;
+    Content: string;
+    Tags: string;
+    Status: string;
+    Votes: number;
+    CreatedAt: string;
+  }
+  
+  const [rowData, setRowData] = useState<Grievance[]>([]);
 
   const onCellValueChanged = (params: any) => {
     const updatedData = params.data;
@@ -184,11 +194,11 @@ export default function Page() {
     );
   }
 
-  const updateStats = (newStatus: string) => {
+  const updateStats = (newStatus: "requested" | "approved" | "rejected" | "pending") => {
     setStats((prev) => ({
       ...prev,
       pending: prev.pending - 1,
-      [newStatus.toLowerCase()]: prev[newStatus.toLowerCase()] + 1,
+      [newStatus]: prev[newStatus] + 1,
     }));
   };
 
