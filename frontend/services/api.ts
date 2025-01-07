@@ -36,6 +36,15 @@ const grievanceService = {
       throw error;
     }
   },
+  Like: async (id: string): Promise<Grievance[]> => {
+    const response = await api.put(`/grievance/${id}/upvote`);
+    return response.data;
+  },
+  Unike: async (id: string): Promise<Grievance[]> => {
+    const response = await api.put(`/grievance/${id}/downvote`);
+    return response.data;
+  },
+
 };
 
 const authService = {
