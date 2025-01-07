@@ -39,7 +39,7 @@ export default function Page() {
       setRowData((prevData) =>
         prevData.map((row) =>
           row.Heading === updatedData.Heading &&
-          row.Content === updatedData.Content
+            row.Content === updatedData.Content
             ? updatedData
             : row
         )
@@ -48,10 +48,10 @@ export default function Page() {
 
     if (data.Status === "Pending") {
       return (
-        <div className="flex items-center justify-center space-x-4 h-full">
+        <div className="flex items-center justify-center space-x-2 h-full">
           <button
             onClick={handleAccept}
-            className="bg-green-800 hover:bg-green-700 text-white font-semibold px-4 py-2 shadow-md transition duration-300 flex items-center justify-center rounded-full h-8 text-sm my-auto"
+            className="bg-green-800 hover:bg-green-700 text-white font-semibold px-3 md:px-4 py-1.5 md:py-2 shadow-md transition duration-300 flex items-center justify-center rounded-full text-xs md:text-sm"
           >
             Approve
           </button>
@@ -60,7 +60,7 @@ export default function Page() {
     } else if (data.Status === "Approved") {
       return (
         <div className="w-full flex items-center justify-center h-full">
-          <button className="bg-[#5d3459] flex items-center justify-center text-white font-semibold px-4 py-2 rounded-full h-8 text-sm my-auto cursor-default">
+          <button className="bg-[#5d3459] flex items-center justify-center text-white font-semibold  px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm cursor-default">
             Approved
           </button>
         </div>
@@ -106,19 +106,19 @@ export default function Page() {
         onChange={handleInputChange}
         onBlur={handleBlurOrEnter}
         onKeyDown={handleBlurOrEnter}
-        className="w-full px-2 py-1 text-sm rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#573054]"
+        className="w-full px-2 py-1 text-xs md:text-sm rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#573054]"
         autoFocus
       />
     ) : (
       <div
-        className="flex items-center justify-center h-full flex-wrap"
+        className="flex items-center justify-start md:justify-center h-full flex-wrap gap-1 md:gap-2 px-1"
         onDoubleClick={handleDoubleClick}
       >
         {data.Tags.split(",").map((tag: string) => (
           <button
             key={tag}
             type="button"
-            className="px-2 py-2 rounded-full text-sm font-medium transition-all bg-gray-300  text-black my-5 mx-5"
+            className="px-2 py-0.5 rounded-full text-xs md:text-sm font-medium bg-gray-200 text-gray-700 whitespace-nowrap"
           >
             {tag}
           </button>
@@ -129,21 +129,22 @@ export default function Page() {
   const contentCellRenderer = (props: any) => {
     const { data } = props;
     return (
-      <div className="flex flex-col w-full h-full">
-        <h2 className="text-lg font-semibold text-gray-800">{data.Heading}</h2>
-        <p className="text-sm text-gray-600 mt-2">{data.Content}</p>
+      <div className="flex flex-col w-full h-full p-2">
+        <h2 className="text-sm md:text-lg font-semibold text-gray-800 line-clamp-2">{data.Heading}</h2>
+        <p className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-2">{data.Content}</p>
       </div>
     );
   };
   const [colDefs, setColDefs] = useState<ColDef[]>([
-    { field: "Grievance", flex: 2, cellRenderer: contentCellRenderer },
-    { field: "Tags", flex: 1.5, cellRenderer: TagsCellRenderer },
-    { field: "Status" },
-    { field: "Votes" },
-    { field: "CreatedAt" },
+    { field: "Grievance", flex: 2, minWidth: 200, cellRenderer: contentCellRenderer },
+    { field: "Tags", flex: 1.5, minWidth: 150, cellRenderer: TagsCellRenderer },
+    { field: "Status", minWidth: 100 },
+    { field: "Votes", minWidth: 80 },
+    { field: "CreatedAt", minWidth: 100 },
     {
       field: "Action",
       flex: 1,
+      minWidth: 120,
       cellRenderer: ActionCellRenderer,
     },
   ]);
@@ -156,7 +157,7 @@ export default function Page() {
     Votes: number;
     CreatedAt: string;
   }
-  
+
   const [rowData, setRowData] = useState<Grievance[]>([]);
 
   const onCellValueChanged = (params: any) => {
@@ -164,7 +165,7 @@ export default function Page() {
     setRowData((prevData) =>
       prevData.map((row) =>
         row.Heading === updatedData.Heading &&
-        row.Content === updatedData.Content
+          row.Content === updatedData.Content
           ? updatedData
           : row
       )
@@ -172,8 +173,9 @@ export default function Page() {
   };
   const getRowHeight = (params: any) => {
     const tags = params.data.Tags.split(",").length;
-    const baseHeight = 50;
-    return baseHeight + tags * 5;
+    const baseHeight = window.innerWidth < 640 ? 50 : 75;
+    const tagHeight = window.innerWidth < 640 ? 2 : 3;
+    return baseHeight + (tags * tagHeight);
   };
 
   function Navbar() {
@@ -191,6 +193,19 @@ export default function Page() {
           </Link>
         </div>
       </nav>
+    );
+  }
+
+  function StatsCard({ title, value, color }: { title: string; value: number; color: string }) {
+    return (
+      <div className="flex flex-col items-center justify-center p-3 rounded-lg">
+        <h2 className="text-lg md:text-xl text-gray-600 font-semibold text-center">
+          {title}
+        </h2>
+        <span className={`text-3xl md:text-4xl mt-2 ${color} font-bold`}>
+          {value}
+        </span>
+      </div>
     );
   }
 
@@ -238,59 +253,35 @@ export default function Page() {
   }, []);
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
       {loading ? (
-        <div className="flex items-center justify-center h-screen">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900" />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-16 w-16 md:h-32 md:w-32 border-b-2 border-gray-900" />
         </div>
       ) : (
-        <div className="flex flex-col h-full w-full">
-          <div className="w-full flex flex-col mt-6">
-            <div className="w-[50%] flex items-center flex-col justify-evenly border-2 border-gray-300 rounded-xl p-4 mx-auto my-10 shadow-lg bg-[#fcffdf]">
-              <h1 className="text-center text-4xl font-bold text-gray-800 mb-4">
+        <main className="flex-1 py-4 px-2">
+          <div className="max-w-7xl mx-auto">
+            <div className="w-full md:w-[80%] lg:w-[70%] mx-auto bg-[#fcffdf] rounded-xl shadow-lg border-2 border-gray-300 p-3 my-8">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-4">
                 Approval Status
               </h1>
-              <div className="flex flex-row justify-evenly w-full mt-4 space-x-4">
-                <div className="flex flex-col items-center justify-center p-4 rounded-lg">
-                  <h2 className="text-xl text-gray-600 font-semibold">
-                    Requested
-                  </h2>
-                  <span className="text-4xl mt-3 text-gray-800 font-bold">
-                    {stats.requested}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center p-4 rounded-lg">
-                  <h2 className="text-xl text-gray-600 font-semibold">
-                    Approved
-                  </h2>
-                  <span className="text-4xl mt-3 text-green-700 font-bold">
-                    {stats.approved}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center p-4 rounded-lg">
-                  <h2 className="text-xl text-gray-600 font-semibold">
-                    Rejected
-                  </h2>
-                  <span className="text-4xl mt-3 text-red-700 font-bold">
-                    {stats.rejected}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center p-4 rounded-lg">
-                  <h2 className="text-xl text-gray-600 font-semibold">
-                    Pending
-                  </h2>
-                  <span className="text-4xl mt-3 text-amber-600 font-bold">
-                    {stats.pending}
-                  </span>
-                </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <StatsCard title="Requested" value={stats.requested} color="text-gray-800" />
+                <StatsCard title="Approved" value={stats.approved} color="text-green-700" />
+                <StatsCard title="Rejected" value={stats.rejected} color="text-red-700" />
+                <StatsCard title="Pending" value={stats.pending} color="text-amber-600" />
               </div>
             </div>
 
-            <div className="w-full p-4">
+            <div className="mt-6 mb-14 w-full">
               <div
                 className="ag-theme-quartz"
-                style={{ height: 500, width: "100%", backgroundColor: "#fcffdf" }}
+                style={{
+                  height: '100%',
+                  width: "100%",
+                  backgroundColor: "#fcffdf"
+                }}
               >
                 <AgGridReact
                   rowData={rowData}
@@ -299,13 +290,19 @@ export default function Page() {
                   theme={"legacy"}
                   onCellValueChanged={onCellValueChanged}
                   getRowHeight={getRowHeight}
+                  domLayout="autoHeight"
+                  defaultColDef={{
+                    resizable: true,
+                    sortable: true,
+                    filter: true,
+                  }}
                 />
               </div>
             </div>
           </div>
-        </div>
+        </main>
       )}
       <Footer />
-    </>
+    </div>
   );
 }

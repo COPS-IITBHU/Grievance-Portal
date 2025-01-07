@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <div className='flex flex-col items-center mt-10 mb-5'>
+      <div className='flex flex-col items-center mt-10 mb-14'>
         {grievances.map((grievance) => (
           <GrievanceCard
             key={grievance._id}
