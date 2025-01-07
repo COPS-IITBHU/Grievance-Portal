@@ -44,7 +44,7 @@ function GrievanceCard(props: GrievanceCardProps) {
     
     return (
         <div className='w-full md:w-[80%] p-4'>
-            <div className='flex flex-col bg-[#fcffdf] p-4 rounded-lg shadow-md shadow-[#864e82] border-2 border-solid border-[#643861]'>
+            <div className='flex flex-col bg-[#fcffdf] min-h-40 justify-between p-4 rounded-lg shadow-md shadow-[#864e82] border-2 border-solid border-[#643861]'>
                 <div className='flex justify-between items-center'>
                     <div className='flex gap-5'>
                         <h1 className='font-semibold text-lg'>{props.title}</h1>
@@ -81,8 +81,8 @@ function GrievanceCard(props: GrievanceCardProps) {
                     </div>
                 ) : (
                     <div className='items-center flex flex-col md:flex-row'>
-                        {props.userImages && (
-                            <img src={props.userImages[0]} alt="userImage" className=' w-full md:w-40 md:h-20 mt-2 md:mr-4' />
+                        {props.userImages && props.userImages.length > 0 && (
+                            <img src={props.userImages[0]} alt="userImage" className='w-full md:w-40 md:h-20 mt-2 md:mr-4' />
                         )}
                         <p className='text-sm text-gray-500 mt-2 md:mt-0 hover:cursor-pointer' onClick={handleExpandClick}>
                             {discriptionSmall}
