@@ -1,8 +1,11 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Badge from './Badge';
+import Cookies from 'js-cookie';
+import { grievanceService } from '@/services/api';
 
 interface GrievanceCardProps {
+    id: string;
     title: string;
     description: string;
     status: boolean;
@@ -19,14 +22,36 @@ function GrievanceCard(props: GrievanceCardProps) {
     const [expanded, setExpanded] = useState(false);
     const [discriptionSmall, setDiscriptionSmall] = useState(props.description);
 
-    const handleUpVoteClick = () => {
-        // TODO: Send request to the backend API
-        if (upVoted) {
-            setUpVoted(false);
-            setVotes(votes - 1);
-        } else {
-            setUpVoted(true);
-            setVotes(votes + 1);
+    useEffect(() => {
+        const upvotedIds = Cookies.get('upvotedGrievances');
+        if (upvotedIds) {
+            const upvotedArray = JSON.parse(upvotedIds) as string[];
+            if (upvotedArray.includes(props.id)) {
+                setUpVoted(true);
+            }
+        }
+    }, [props.id]);
+
+    const handleUpVoteClick = async () => {
+        const upvotedIds = Cookies.get('upvotedGrievances');
+        let upvotedArray = upvotedIds ? JSON.parse(upvotedIds) : [];
+        try{
+            if (upVoted) {
+                await grievanceService.Unike(props.id);
+                setUpVoted(false);
+                setVotes(votes - 1);
+                upvotedArray = upvotedArray.filter((id: string) => id !== props.id);
+            } else {
+                await grievanceService.Like(props.id);
+                setUpVoted(true);
+                setVotes(votes + 1);
+                if (!upvotedArray.includes(props.id)) {
+                    upvotedArray.push(props.id);
+                }
+            }
+            Cookies.set('upvotedGrievances', JSON.stringify(upvotedArray));
+        } catch (err) {
+            console.error('Error upvoting grievance:', err);
         }
     };
 

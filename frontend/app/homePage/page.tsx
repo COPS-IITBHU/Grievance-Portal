@@ -44,6 +44,7 @@ export default function Home() {
         {grievances.map((grievance) => (
           <GrievanceCard
             key={grievance._id}
+            id={grievance._id}
             title={grievance.heading}
             description={grievance.content}
             status={grievance.isComplete}
