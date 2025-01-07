@@ -32,4 +32,21 @@ grievanceRouter.get('/', async (req, res) => {
   res.json(grievances);
 });
 
+grievanceRouter.put('/:id/upvote', authMiddleware, async (req, res) => {
+  try {
+    const grievance = await Grievance.findById(req.params.id);
+    if (!grievance) {
+      return res.status(404).json({ message: 'Grievance not found' });
+    }
+
+    grievance.upvote_count = (grievance.upvote_count || 0) + 1;
+    await grievance.save();
+
+    res.json(grievance);
+  } catch (err) {
+    console.error('Error updating upvote count:', err);
+    res.status(500).json({ message: (err as Error).message });
+  }
+});
+
 export default grievanceRouter;
