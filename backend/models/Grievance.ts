@@ -9,6 +9,7 @@ interface IGrievance extends Document {
   upvote_count: number;
   isPending: boolean;
   isComplete: boolean;
+  isRejected: boolean;
   created_at: Date;
   updated_at: Date;
 }
@@ -22,6 +23,7 @@ const GrievanceSchema: Schema<IGrievance> = new Schema({
   upvote_count: { type: Number, default: 0 },
   isPending: { type: Boolean, default: true },
   isComplete: { type: Boolean, default: false },
+  isRejected: { type: Boolean, default: false },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
 });

@@ -34,7 +34,19 @@ export default function Page() {
         alert("Failed to approve grievance");
       }
     };
-
+    const handleReject = async () => {
+    try {
+      const currentTags = data.Tags.split(',').map((t: string) => t.trim());
+      await adminService.rejectGrievance(data._id, currentTags);
+      data.Status = "Rejected";
+      props.api.refreshCells({ rowNodes: [props.node], force: true });
+      updateRowData(data);
+      updateStats("rejected");
+      alert("Grievance rejected successfully");
+    } catch (error) {
+      alert("Failed to reject grievance");
+    }
+  };
     const updateRowData = (updatedData: any) => {
       setRowData((prevData) =>
         prevData.map((row) =>
@@ -48,13 +60,19 @@ export default function Page() {
 
     if (data.Status === "Pending") {
       return (
-        <div className="flex items-center justify-center space-x-2 h-full">
+        <div className="flex items-center justify-center space-x-1 h-full">
           <button
             onClick={handleAccept}
-            className="bg-green-800 hover:bg-green-700 text-white font-semibold px-3 md:px-4 py-1.5 md:py-2 shadow-md transition duration-300 flex items-center justify-center rounded-full text-xs md:text-sm"
+            className="bg-green-800 hover:bg-green-700 text-white font-semibold px-2 md:px-3 py-1.5 md:py-2 shadow-md transition duration-300 flex items-center justify-center rounded-full text-xs md:text-sm"
           >
             Approve
           </button>
+          <button
+          onClick={handleReject}
+          className="bg-red-800 hover:bg-red-700 text-white font-semibold px-2 md:px-3 py-1.5 md:py-2 shadow-md transition duration-300 flex items-center justify-center rounded-full text-xs md:text-sm"
+        >
+          Reject
+        </button>
         </div>
       );
     } else if (data.Status === "Approved") {
@@ -65,7 +83,15 @@ export default function Page() {
           </button>
         </div>
       );
-    }
+    } else if (data.Status === "Rejected") {
+    return (
+      <div className="w-full flex items-center justify-center h-full">
+        <button className="bg-red-700 flex items-center justify-center text-white font-semibold px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm cursor-default">
+          Rejected
+        </button>
+      </div>
+    );
+  }
     return null;
   };
 
