@@ -76,7 +76,7 @@ const adminService = {
   },
 
   verifyGrievance: async (id: string, isPending: boolean, tags?: string[]): Promise<Grievance> => {
-    const response = await api.put(`/admin/${id}/verify`, { 
+    const response = await api.put(`/admin/${id}/verify`, {
       isPending,
       tags: tags ? tags : undefined
     });
@@ -89,6 +89,12 @@ const adminService = {
       formData.append('progressImages', image);
     });
     const response = await api.put(`/admin/${id}/progress`, formData);
+    return response.data;
+  },
+  rejectGrievance: async (id: string, tags?: string[]): Promise<Grievance> => {
+    const response = await api.put(`/admin/${id}/reject`, {
+      tags: tags ? tags : undefined
+    });
     return response.data;
   }
 };
