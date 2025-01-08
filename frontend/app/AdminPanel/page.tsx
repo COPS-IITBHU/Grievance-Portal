@@ -35,18 +35,18 @@ export default function Page() {
       }
     };
     const handleReject = async () => {
-    try {
-      const currentTags = data.Tags.split(',').map((t: string) => t.trim());
-      await adminService.rejectGrievance(data._id, currentTags);
-      data.Status = "Rejected";
-      props.api.refreshCells({ rowNodes: [props.node], force: true });
-      updateRowData(data);
-      updateStats("rejected");
-      alert("Grievance rejected successfully");
-    } catch (error) {
-      alert("Failed to reject grievance");
-    }
-  };
+      try {
+        const currentTags = data.Tags.split(',').map((t: string) => t.trim());
+        await adminService.rejectGrievance(data._id, currentTags);
+        data.Status = "Rejected";
+        props.api.refreshCells({ rowNodes: [props.node], force: true });
+        updateRowData(data);
+        updateStats("rejected");
+        alert("Grievance rejected successfully");
+      } catch (error) {
+        alert("Failed to reject grievance");
+      }
+    };
     const updateRowData = (updatedData: any) => {
       setRowData((prevData) =>
         prevData.map((row) =>
@@ -68,11 +68,11 @@ export default function Page() {
             Approve
           </button>
           <button
-          onClick={handleReject}
-          className="bg-red-800 hover:bg-red-700 text-white font-semibold px-2 md:px-3 py-1.5 md:py-2 shadow-md transition duration-300 flex items-center justify-center rounded-full text-xs md:text-sm"
-        >
-          Reject
-        </button>
+            onClick={handleReject}
+            className="bg-red-800 hover:bg-red-700 text-white font-semibold px-2 md:px-3 py-1.5 md:py-2 shadow-md transition duration-300 flex items-center justify-center rounded-full text-xs md:text-sm"
+          >
+            Reject
+          </button>
         </div>
       );
     } else if (data.Status === "Approved") {
@@ -84,14 +84,14 @@ export default function Page() {
         </div>
       );
     } else if (data.Status === "Rejected") {
-    return (
-      <div className="w-full flex items-center justify-center h-full">
-        <button className="bg-red-700 flex items-center justify-center text-white font-semibold px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm cursor-default">
-          Rejected
-        </button>
-      </div>
-    );
-  }
+      return (
+        <div className="w-full flex items-center justify-center h-full">
+          <button className="bg-red-700 flex items-center justify-center text-white font-semibold px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm cursor-default">
+            Rejected
+          </button>
+        </div>
+      );
+    }
     return null;
   };
 
@@ -254,7 +254,7 @@ export default function Page() {
           Heading: g.heading,
           Content: g.content,
           Tags: g.tags.join(", "),
-          Status: g.isPending ? "Pending" : "Approved",
+          Status: g.isRejected ? "Rejected" : g.isPending ? "Pending" : "Approved",
           Votes: g.upvote_count || 0,
           CreatedAt: new Date(g.created_at).toLocaleDateString(),
         }));
@@ -264,8 +264,8 @@ export default function Page() {
         // Calculate stats
         setStats({
           requested: grievances.length,
-          approved: grievances.filter((g) => !g.isPending).length,
-          rejected: 0, // Since the interface doesn't have rejected status
+          approved: grievances.filter((g) => !g.isPending && !g.isRejected).length,
+          rejected: grievances.filter((g) => g.isRejected).length,
           pending: grievances.filter((g) => g.isPending).length,
         });
       } catch (error) {

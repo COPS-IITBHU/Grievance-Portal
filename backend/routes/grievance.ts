@@ -28,7 +28,10 @@ grievanceRouter.post('/', authMiddleware, uploadImages, async (req, res) => {
 });
 
 grievanceRouter.get('/', async (req, res) => {
-  const grievances = await Grievance.find({ isPending: false });
+  const grievances = await Grievance.find({ 
+    isPending: false,
+    isRejected: { $ne: true } 
+  });
   res.json(grievances);
 });
 

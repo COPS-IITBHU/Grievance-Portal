@@ -93,7 +93,9 @@ const adminService = {
   },
   rejectGrievance: async (id: string, tags?: string[]): Promise<Grievance> => {
     const response = await api.put(`/admin/${id}/reject`, {
-      tags: tags ? tags : undefined
+      tags: tags ? tags : undefined,
+      isRejected: true,
+      isPending: false
     });
     return response.data;
   }
