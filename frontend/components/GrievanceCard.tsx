@@ -60,18 +60,18 @@ function GrievanceCard(props: GrievanceCardProps) {
     };
 
     useEffect(() => {
-            if (props.description.length > 350) {
-                setDiscriptionSmall(props.description.substring(0, 490) + "...Read More");
+            if (props.description.length > 200) {
+                setDiscriptionSmall(props.description.substring(0, 200) + "...Read More");
             } else {
                 setDiscriptionSmall(props.description + "...Read More");
             }
     }, [props.description]);
     
     return (
-        <div className='w-full md:w-[80%] p-4'>
-            <div className='flex flex-col bg-[#fcffdf] min-h-40 justify-between p-4 rounded-lg shadow-md shadow-[#864e82] border-2 border-solid border-[#643861]'>
-                <div className='flex justify-between items-center'>
-                    <div className='flex gap-5'>
+        <div className='md:w-[50%] p-4'>
+            <div className='flex flex-col bg-[#fcffdf] min-h-52 min-w-80 sm:min-w-96 justify-between p-4 rounded-lg shadow-md shadow-[#864e82] border-2 border-solid border-[#643861]'>
+                <div className='flex gap-5 items-center'>
+                    <div className='flex justify-between items-center w-full'>
                         <h1 className='font-semibold text-lg'>{props.title}</h1>
                         <p className='font-light'>{props.status ? '🟢 Resolved' : '🟡 Pending'}</p>
                     </div>
@@ -88,7 +88,7 @@ function GrievanceCard(props: GrievanceCardProps) {
                         <div className='mt-2 items-center'>
                             <div className='flex gap-2 flex-wrap items-center justify-center'>
                                 {props.userImages?.map((image, index) => (
-                                    <img key={index} src={image} alt="userImage" className='w-full md:w-80' />
+                                    <img key={index} src={image} alt="userImage" className='w-40' />
                                 ))}
                             </div>
                             <p className='mt-2'>{props.description}</p>
@@ -96,7 +96,7 @@ function GrievanceCard(props: GrievanceCardProps) {
                             <h1 className='mt-2 font-semibold text-lg'>Responses</h1>
                             <div className='flex gap-2 flex-wrap items-center justify-center'>
                                 {props.adminImages?.map((image, index) => (
-                                    <img key={index} src={image} alt="adminImage" className='w-full md:w-80' />
+                                    <img key={index} src={image} alt="adminImage" className='w-40' />
                                 ))}
                             </div>
                             {props.adminComments?.map((comment, index) => (
@@ -105,9 +105,9 @@ function GrievanceCard(props: GrievanceCardProps) {
                         </div>
                     </div>
                 ) : (
-                    <div className='items-center flex flex-col md:flex-row'>
+                    <div className='items-center flex'>
                         {props.userImages && props.userImages.length > 0 && (
-                            <img src={props.userImages[0]} alt="userImage" className='w-full md:w-40 md:h-20 mt-2 md:mr-4' />
+                            <img src={props.userImages[0]} alt="userImage" className='w-20 h-20 mt-2 mr-4' />
                         )}
                         <p className='text-sm text-gray-500 mt-2 md:mt-0 hover:cursor-pointer' onClick={handleExpandClick}>
                             {discriptionSmall}

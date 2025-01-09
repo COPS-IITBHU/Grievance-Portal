@@ -40,21 +40,23 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <div className='flex flex-col items-center mt-10 mb-14'>
-        {grievances.map((grievance) => (
-          <GrievanceCard
-            key={grievance._id}
-            id={grievance._id}
-            title={grievance.heading}
-            description={grievance.content}
-            status={grievance.isComplete}
-            votes={grievance.upvote_count}
-            tags={grievance.tags}
-            userImages={grievance.related_images}
-            adminImages={grievance.progress_images}
-            adminComments={[]}
-          />
-        ))}
+      <div className='flex flex-col items-center justify-center'>
+        <div className='flex flex-wrap align-middle justify-center items-center mt-10 mb-14 w-[80%] '>
+          {grievances.map((grievance) => (
+            <GrievanceCard
+              key={grievance._id}
+              id={grievance._id}
+              title={grievance.heading}
+              description={grievance.content}
+              status={grievance.isComplete}
+              votes={grievance.upvote_count}
+              tags={grievance.tags}
+              userImages={grievance.related_images}
+              adminImages={grievance.progress_images}
+              adminComments={[]}
+            />
+          ))}
+        </div>
       </div>
       <Footer />
     </>
