@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import Badge from './Badge';
 import Cookies from 'js-cookie';
 import { grievanceService } from '@/services/api';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
 
 interface GrievanceCardProps {
     id: string;
@@ -16,11 +18,32 @@ interface GrievanceCardProps {
     tags?: string[];
 }
 
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    bgcolor: '#fcffdf',
+    border: '2px solid #643861',
+    boxShadow: 40,
+    width: 1000,
+    height: 500,
+    p: 4,
+  };
+
 function GrievanceCard(props: GrievanceCardProps) {
     const [votes, setVotes] = useState(props.votes);
     const [upVoted, setUpVoted] = useState(false);
     const [expanded, setExpanded] = useState(false);
     const [discriptionSmall, setDiscriptionSmall] = useState(props.description);
+    const [userOpen, setUserOpen] = useState(false);
+    const [adminOpen, setAdminOpen] = useState(false);
+    const handleUserOpen = () => setUserOpen(true);
+    const handleAdminOpen = () => setAdminOpen(true);
+    const handleClose = () => {
+        setUserOpen(false);
+        setAdminOpen(false);
+    }
 
     useEffect(() => {
         const upvotedIds = Cookies.get('upvotedGrievances');
@@ -69,6 +92,44 @@ function GrievanceCard(props: GrievanceCardProps) {
     
     return (
         <div className='md:w-[50%] p-4'>
+            <Modal
+                open={userOpen}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style} className='overflow-auto flex flex-col items-center'>
+                    <div className='w-full'>
+                        Images
+                    </div>
+                    <div className='w-full h-full flex justify-center'>
+                        <div className='flex gap-2 items-center justify-center'>
+                            {props.userImages?.map((image, index) => (
+                                <img key={index} src={image} alt="userImage" className='w-64' />
+                            ))}
+                        </div>
+                    </div>
+                </Box>
+            </Modal>
+            <Modal
+                open={adminOpen}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style} className='overflow-auto flex flex-col items-center'>
+                    <div className='w-full'>
+                        Images
+                    </div>
+                    <div className='w-full h-full flex justify-center'>
+                        <div className='flex gap-2 items-center justify-center'>
+                            {props.adminImages?.map((image, index) => (
+                                <img key={index} src={image} alt="userImage" className='w-64' />
+                            ))}
+                        </div>
+                    </div>
+                </Box>
+            </Modal>
             <div className='flex flex-col bg-[#fcffdf] min-h-52 min-w-80 sm:min-w-96 justify-between p-4 rounded-lg shadow-md shadow-[#864e82] border-2 border-solid border-[#643861]'>
                 <div className='flex gap-5 items-center'>
                     <div className='flex justify-between items-center w-full'>
@@ -88,7 +149,7 @@ function GrievanceCard(props: GrievanceCardProps) {
                         <div className='mt-2 items-center'>
                             <div className='flex gap-2 flex-wrap items-center justify-center'>
                                 {props.userImages?.map((image, index) => (
-                                    <img key={index} src={image} alt="userImage" className='w-40' />
+                                    <img key={index} src={image} onClick={handleUserOpen} alt="userImage" className='w-40 h-40' />
                                 ))}
                             </div>
                             <p className='mt-2'>{props.description}</p>
@@ -96,7 +157,7 @@ function GrievanceCard(props: GrievanceCardProps) {
                             <h1 className='mt-2 font-semibold text-lg'>Responses</h1>
                             <div className='flex gap-2 flex-wrap items-center justify-center'>
                                 {props.adminImages?.map((image, index) => (
-                                    <img key={index} src={image} alt="adminImage" className='w-40' />
+                                    <img key={index} src={image} onClick={handleAdminOpen} alt="adminImage" className='w-40 h-40' />
                                 ))}
                             </div>
                             {props.adminComments?.map((comment, index) => (
