@@ -4,10 +4,8 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useState, useEffect } from "react";
 import { ClientSideRowModelModule, ColDef } from "ag-grid-community";
-import Image from "next/image";
-import Link from "next/link";
-import LOGO from "@/public/IITBHU_LOGO.png";
 import { adminService } from "@/services/api";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export default function Page() {
@@ -203,24 +201,6 @@ export default function Page() {
     const tagHeight = window.innerWidth < 640 ? 2 : 3;
     return baseHeight + (tags * tagHeight);
   };
-
-  function Navbar() {
-    return (
-      <nav>
-        <div className="flex justify-between items-center bg-[#703f6c] p-2 shadow-lg">
-          <Link href="/" className="flex items-center gap-3 ml-6">
-            <Image
-              src={LOGO}
-              alt="IIT BHU Logo"
-              width={64}
-              height={64}
-              quality={100}
-            />
-          </Link>
-        </div>
-      </nav>
-    );
-  }
 
   function StatsCard({ title, value, color }: { title: string; value: number; color: string }) {
     return (

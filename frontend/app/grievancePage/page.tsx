@@ -1,10 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import Image from "next/image";
-import Link from "next/link";
 import { grievanceService } from '@/services/api';
 import { useRouter } from 'next/navigation';
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 function GrievancePage() {
@@ -89,25 +88,6 @@ function GrievancePage() {
       }
     }
   };
-
-  function Navbar() {
-    return (
-      <nav>
-        <div className="flex justify-between items-center bg-[#703f6c] p-2 shadow-lg">
-          <Link href="/" className="flex items-center gap-3 ml-6">
-            <Image
-              src="/IITBHU_LOGO.png"
-              alt="IIT BHU Logo"
-              width={64} 
-              height={64}
-              className="h-16 w-16" 
-            />
-          </Link>
-        </div>
-      </nav>
-    );
-  }
-  
 
   return (
     <>
