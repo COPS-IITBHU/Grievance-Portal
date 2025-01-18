@@ -1,8 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Badge from './Badge';
-import Cookies from 'js-cookie';
-import { grievanceService } from '@/services/api';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 
@@ -32,8 +30,6 @@ const style = {
   };
 
 function GrievanceCard(props: GrievanceCardProps) {
-    const [votes, setVotes] = useState(props.votes);
-    const [upVoted, setUpVoted] = useState(false);
     const [expanded, setExpanded] = useState(false);
     const [discriptionSmall, setDiscriptionSmall] = useState(props.description);
     const [userOpen, setUserOpen] = useState(false);
@@ -44,39 +40,6 @@ function GrievanceCard(props: GrievanceCardProps) {
         setUserOpen(false);
         setAdminOpen(false);
     }
-
-    useEffect(() => {
-        const upvotedIds = Cookies.get('upvotedGrievances');
-        if (upvotedIds) {
-            const upvotedArray = JSON.parse(upvotedIds) as string[];
-            if (upvotedArray.includes(props.id)) {
-                setUpVoted(true);
-            }
-        }
-    }, [props.id]);
-
-    const handleUpVoteClick = async () => {
-        const upvotedIds = Cookies.get('upvotedGrievances');
-        let upvotedArray = upvotedIds ? JSON.parse(upvotedIds) : [];
-        try{
-            if (upVoted) {
-                await grievanceService.Unike(props.id);
-                setUpVoted(false);
-                setVotes(votes - 1);
-                upvotedArray = upvotedArray.filter((id: string) => id !== props.id);
-            } else {
-                await grievanceService.Like(props.id);
-                setUpVoted(true);
-                setVotes(votes + 1);
-                if (!upvotedArray.includes(props.id)) {
-                    upvotedArray.push(props.id);
-                }
-            }
-            Cookies.set('upvotedGrievances', JSON.stringify(upvotedArray));
-        } catch (err) {
-            console.error('Error upvoting grievance:', err);
-        }
-    };
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -153,16 +116,6 @@ function GrievanceCard(props: GrievanceCardProps) {
                                 ))}
                             </div>
                             <p className='mt-2'>{props.description}</p>
-                            <hr className='mt-2 border-1 border-solid border-black' />
-                            <h1 className='mt-2 font-semibold text-lg'>Responses</h1>
-                            <div className='flex gap-2 flex-wrap items-center justify-center'>
-                                {props.adminImages?.map((image, index) => (
-                                    <img key={index} src={image} onClick={handleAdminOpen} alt="adminImage" className='w-40 h-40' />
-                                ))}
-                            </div>
-                            {props.adminComments?.map((comment, index) => (
-                                <p key={index} className='mt-2 ml-6'>Admin: {comment}</p>
-                            ))}
                         </div>
                     </div>
                 ) : (
@@ -176,16 +129,6 @@ function GrievanceCard(props: GrievanceCardProps) {
                     </div>
                 )}
                 <div className='flex gap-2 items-center mt-2'>
-                    {upVoted ? (
-                        <p onClick={handleUpVoteClick} className='w-6 h-6'>
-                            <img src="./upvoted.svg" alt="upvoted" />
-                        </p>
-                    ) : (
-                        <p onClick={handleUpVoteClick} className='w-6 h-6'>
-                            <img src="./default.svg" alt="default" />
-                        </p>
-                    )}
-                    <p className='text-xl'>{votes}</p>
                     <div className='flex gap-2 flex-wrap'>
                         {props.tags?.map((tag, index) => (
                             <Badge key={index} tag={tag} />

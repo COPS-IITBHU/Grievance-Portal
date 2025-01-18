@@ -20,7 +20,6 @@ const GrievanceSchema: Schema<IGrievance> = new Schema({
   tags: [String],
   related_images: [String],
   progress_images: [String],
-  upvote_count: { type: Number, default: 0 },
   isPending: { type: Boolean, default: true },
   isComplete: { type: Boolean, default: false },
   isRejected: { type: Boolean, default: false },
