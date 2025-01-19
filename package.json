@@ -14,5 +14,8 @@
     "concurrently": "^9.1.0",
     "nodemon": "^3.1.9",
     "ts-node-dev": "^2.0.0"
+  },
+  "dependencies": {
+    "jwt-decode": "^4.0.0"
   }
 }
