@@ -13,7 +13,7 @@ authRouter.get(
   (req, res) => {
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     const user = req.user as IUser;
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user._id, email: user.email, avatar: user.avatar }, process.env.JWT_SECRET);
     res.redirect(`${frontendUrl}/loginPage?token=${token}`);
   }
 );

@@ -4,6 +4,7 @@ interface IUser extends Document {
   name: string;
   email: string;
   role: string;
+  avatar: string;
   created_at: Date;
 }
 
@@ -11,6 +12,7 @@ const UserSchema: Schema<IUser> = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
+  avatar: { type: String },
   created_at: { type: Date, default: Date.now },
 });
 
