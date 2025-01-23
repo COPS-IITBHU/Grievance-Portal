@@ -10,7 +10,7 @@ interface IGrievance extends Document {
   isPending: boolean;
   isComplete: boolean;
   isRejected: boolean;
-  user: IUser;
+  user: IUser['_id'];
   name: string;
   phoneNumber: string;
   roomNumber: string;

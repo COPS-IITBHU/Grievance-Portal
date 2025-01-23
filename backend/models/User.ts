@@ -1,7 +1,9 @@
 import mongoose, { Document, Schema, Model } from 'mongoose';
 import { IGrievance } from './Grievance';
+import { v4 as uuidv4 } from 'uuid';
 
 interface IUser extends Document {
+  id: string;
   name: string;
   email: string;
   role: string;
@@ -17,6 +19,7 @@ interface IUser extends Document {
 }
 
 const UserSchema: Schema<IUser> = new Schema({
+  id: { type: String, default: uuidv4, unique: true },
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   role: { type: String, enum: ['user', 'admin'], default: 'user' },

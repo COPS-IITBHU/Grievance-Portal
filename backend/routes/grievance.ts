@@ -7,16 +7,19 @@ const grievanceRouter = express.Router();
 
 grievanceRouter.post('/', authMiddleware, uploadImages, async (req, res) => {
   try {
-    const { heading, content, tags } = req.body;
-
+    const { userId, name, phoneNumber, roomNumber, heading, content, tags } = req.body;
     // Extract image URLs from Cloudinary response
     const imageUrls = (req.files as Express.Multer.File[]).map(file => (file as any).path);
 
     const grievance = new Grievance({
+      name,
+      phoneNumber,
+      roomNumber,
       heading,
       content,
       tags: Array.isArray(tags) ? tags : [tags], // Ensure tags is an array
       related_images: imageUrls,
+      user: userId // Add the user ID to the grievance
     });
 
     await grievance.save();
