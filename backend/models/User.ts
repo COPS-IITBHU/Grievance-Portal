@@ -1,10 +1,18 @@
 import mongoose, { Document, Schema, Model } from 'mongoose';
+import { IGrievance } from './Grievance';
 
 interface IUser extends Document {
   name: string;
   email: string;
   role: string;
   avatar: string;
+  branch: string;
+  gender: string;
+  rollNumber: string;
+  program: string;
+  yearOfStudy: string;
+  hostel: string;
+  grievances: IGrievance[];
   created_at: Date;
 }
 
@@ -13,6 +21,13 @@ const UserSchema: Schema<IUser> = new Schema({
   email: { type: String, required: true, unique: true },
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
   avatar: { type: String },
+  branch: { type: String, required: true },
+  gender: { type: String, required: true },
+  rollNumber: { type: String, required: true, unique: true },
+  program: { type: String, required: true },
+  yearOfStudy: { type: String, required: true },
+  hostel: { type: String, required: true },
+  grievances: [{ type: Schema.Types.ObjectId, ref: 'Grievance' }],
   created_at: { type: Date, default: Date.now },
 });
 
