@@ -44,10 +44,7 @@ export const configurePassport = () => {
             email: profile.emails[0].value,
             picture: profile.photos[0].value,
           });
-        } else if (!user.avatar) {
-          user.avatar = profile.photos[0].value;
-          await user.save();
-        }
+        } 
         return done(null, user);
       } catch (error) {
         return done(error, false);

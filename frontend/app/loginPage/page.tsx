@@ -13,7 +13,7 @@ function LoginContent() {
     const token = searchParams.get("token");
     if (token) {
       authService.setToken(token);
-      router.push("/homePage");
+      router.push("/");
     }
   }, [router]);
 
