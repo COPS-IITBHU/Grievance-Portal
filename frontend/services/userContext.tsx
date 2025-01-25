@@ -1,16 +1,35 @@
-import React, { createContext, useState, useContext, ReactNode, useEffect } from "react";
-import { IUser } from "../../backend/models/User";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+} from "react";
 import { authService } from "./api";
-
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+  avatar: string;
+  branch: string;
+  gender: string;
+  rollNumber: string;
+  program: string;
+  yearOfStudy: string;
+  hostel: string;
+  grievances?: [];
+  created_at?: Date;
+}
 interface UserContextType {
-  user: IUser | null;
-  setUser: (user: IUser | null) => void;
+  user: User | null;
+  setUser: (user: User | null) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<IUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Grievance } from "../types/grievance";
-import { useUser } from "./userContext";
+import { User } from "./userContext";
 
 const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 
@@ -96,6 +96,29 @@ const authService = {
           Authorization: `Bearer ${token}`,
         },
       });
+      return response.data;
+    } catch (error: any) {
+      if (error.response) {
+        throw new Error(error.response.data);
+      }
+      throw error;
+    }
+  },
+  UpdateUserProfile: async (id: string, data: User) => {
+    try {
+      const token = authService.getToken();
+      if (!token) {
+        throw new Error("Please log in to view profile.");
+      }
+      const response = await axios.put(
+        `${baseURL}/user/update`,
+        { userId: id, updateData: data },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       return response.data;
     } catch (error: any) {
       if (error.response) {
