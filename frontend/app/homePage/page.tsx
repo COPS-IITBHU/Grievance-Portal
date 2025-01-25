@@ -1,21 +1,21 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import GrievanceCard from '@/components/GrievanceCard';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { grievanceService, authService } from '@/services/api';
-import { Grievance } from '@/types/grievance';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import GrievanceCard from "@/components/GrievanceCard";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { grievanceService, authService } from "@/services/api";
+import { Grievance } from "@/types/grievance";
 
 export default function Home() {
   const [grievances, setGrievances] = useState<Grievance[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const router = useRouter();
 
   useEffect(() => {
     if (!authService.isLoggedIn()) {
-      router.push('/loginPage');
+      router.push("/loginPage");
       return;
     }
 
@@ -24,7 +24,7 @@ export default function Home() {
         const data = await grievanceService.getAll();
         setGrievances(data);
       } catch (err) {
-        setError('Failed to fetch grievances');
+        setError("Failed to fetch grievances");
         console.error(err);
       } finally {
         setLoading(false);
@@ -40,8 +40,11 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <div className='flex flex-col items-center justify-center'>
-        <div className='flex flex-wrap align-middle justify-center items-center mt-10 mb-14 w-[80%] '>
+      <div className="flex flex-col items-center justify-center">
+        <button onClick={() => router.push("/grievancePage")} className="bg-[#643861] hover:bg-red-600 text-white py-2 px-4 rounded-md transition-colors mt-5 ml-auto mr-5">
+          Make Your Grievance
+        </button>
+        <div className="flex flex-wrap align-middle justify-center items-center mt-10 mb-14 w-[80%] ">
           {grievances.map((grievance) => (
             <GrievanceCard
               key={grievance._id}

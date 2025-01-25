@@ -4,9 +4,10 @@ import { useForm } from "react-hook-form";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { authService } from "@/services/api";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { UserProvider, useUser } from "@/services/userContext";
 
 interface FormData {
   name: string;
@@ -18,7 +19,10 @@ interface FormData {
   hostel: string;
 }
 
-function ProfilePage() {
+function ProfilePageProps() {
+  const [isEditing, setIsEditing] = useState(false);
+  const { user } = useUser();
+
   const [userEmail, setUserEmail] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
   const [loading, setLoading] = useState(true);
@@ -148,178 +152,253 @@ function ProfilePage() {
                   </div>
                 )}
                 <div>
-                  <h2 className="text-2xl font-bold text-[#643861]">My Profile</h2>
+                  <h2 className="text-2xl font-bold text-[#643861]">
+                    My Profile
+                  </h2>
                   <p className="text-gray-600">{userEmail}</p>
                 </div>
               </div>
-              <button
-                onClick={() => {
-                  authService.logout();
-                  router.push("/loginPage");
-                }}
-                className="bg-[#643861] hover:bg-red-600 text-white py-2 px-4 rounded-md transition-colors"
-              >
-                Logout
-              </button>
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => setIsEditing(!isEditing)}
+                  className="bg-[#643861] hover:bg-blue-600 text-white py-2 px-4 rounded-md transition-colors"
+                >
+                  {isEditing ? "Cancel" : "Edit"}
+                </button>
+                <button
+                  onClick={() => {
+                    authService.logout();
+                    router.push("/loginPage");
+                  }}
+                  className="bg-[#643861] hover:bg-red-600 text-white py-2 px-4 rounded-md transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="bg-[#fcffdf] rounded-lg p-6 shadow-md">
-            <h3 className="text-xl font-bold mb-6 text-[#643861]">
-              Personal Info
-            </h3>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    {...register("name", { required: "Name is required" })}
-                    className="w-full border rounded-md p-2"
-                  />
-                  {errors.name && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.name.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">
-                    Roll Number
-                  </label>
-                  <input
-                    type="text"
-                    {...register("rollNumber", {
-                      required: "Roll number is required",
-                    })}
-                    className="w-full border rounded-md p-2"
-                  />
-                  {errors.rollNumber && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.rollNumber.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">
-                    Branch
-                  </label>
-                  <select
-                    {...register("branch", { required: "Branch is required" })}
-                    className="w-full border rounded-md p-2"
-                  >
-                    <option value="">Select Branch</option>
-                    {Branches.map((branch) => (
-                      <option key={branch} value={branch}>
-                        {branch}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.branch && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.branch.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">
-                    Program
-                  </label>
-                  <select
-                    {...register("program", {
-                      required: "Program is required",
-                    })}
-                    className="w-full border rounded-md p-2"
-                  >
-                    <option value="">Select Program</option>
-                    <option value="B.Tech">B.Tech</option>
-                    <option value="IDD">IDD</option>
-                  </select>
-                  {errors.program && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.program.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">
-                    Gender
-                  </label>
-                  <div className="flex gap-4">
-                    <label className="inline-flex items-center">
-                      <input
-                        type="radio"
-                        {...register("gender", {
-                          required: "Gender is required",
-                        })}
-                        value="male"
-                        className="form-radio"
-                      />
-                      <span className="ml-2">Male</span>
+          {isEditing ? (
+            <div className="bg-[#fcffdf] rounded-lg p-6 shadow-md">
+              <h3 className="text-xl font-bold mb-6 text-[#643861]">
+                Personal Info
+              </h3>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">
+                      Full Name
                     </label>
-                    <label className="inline-flex items-center">
-                      <input
-                        type="radio"
-                        {...register("gender")}
-                        value="female"
-                        className="form-radio"
-                      />
-                      <span className="ml-2">Female</span>
-                    </label>
+                    <input
+                      type="text"
+                      {...register("name", { required: "Name is required" })}
+                      className="w-full border rounded-md p-2"
+                    />
+                    {errors.name && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.name.message}
+                      </p>
+                    )}
                   </div>
-                  {errors.gender && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.gender.message}
-                    </p>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">
+                      Roll Number
+                    </label>
+                    <input
+                      type="text"
+                      {...register("rollNumber", {
+                        required: "Roll number is required",
+                      })}
+                      className="w-full border rounded-md p-2"
+                    />
+                    {errors.rollNumber && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.rollNumber.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">
+                      Branch
+                    </label>
+                    <select
+                      {...register("branch", {
+                        required: "Branch is required",
+                      })}
+                      className="w-full border rounded-md p-2"
+                    >
+                      <option value="">Select Branch</option>
+                      {Branches.map((branch) => (
+                        <option key={branch} value={branch}>
+                          {branch}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.branch && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.branch.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">
+                      Program
+                    </label>
+                    <select
+                      {...register("program", {
+                        required: "Program is required",
+                      })}
+                      className="w-full border rounded-md p-2"
+                    >
+                      <option value="">Select Program</option>
+                      <option value="B.Tech">B.Tech</option>
+                      <option value="IDD">IDD</option>
+                    </select>
+                    {errors.program && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.program.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">
+                      Gender
+                    </label>
+                    <div className="flex gap-4">
+                      <label className="inline-flex items-center">
+                        <input
+                          type="radio"
+                          {...register("gender", {
+                            required: "Gender is required",
+                          })}
+                          value="male"
+                          className="form-radio"
+                        />
+                        <span className="ml-2">Male</span>
+                      </label>
+                      <label className="inline-flex items-center">
+                        <input
+                          type="radio"
+                          {...register("gender")}
+                          value="female"
+                          className="form-radio"
+                        />
+                        <span className="ml-2">Female</span>
+                      </label>
+                    </div>
+                    {errors.gender && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.gender.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {watchGender && (
+                    <div>
+                      <label className="block text-gray-700 font-medium mb-2">
+                        Hostel
+                      </label>
+                      <select
+                        {...register("hostel", {
+                          required: "Hostel is required",
+                        })}
+                        className="w-full border rounded-md p-2"
+                      >
+                        <option value="">Select Hostel</option>
+                        {(watchGender === "male"
+                          ? maleHostels
+                          : femaleHostels
+                        ).map((hostel) => (
+                          <option key={hostel} value={hostel}>
+                            {hostel}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.hostel && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.hostel.message}
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
 
-                {watchGender && (
+                <div className="flex justify-end mt-6">
+                  <button
+                    type="submit"
+                    className="bg-[#643861] hover:bg-[#d35c13] text-white py-2 px-8 rounded-md transition-colors"
+                  >
+                    Update Profile
+                  </button>
+                </div>
+              </form>
+            </div>
+          ) : (
+            <div className="bg-[#fcffdf] rounded-lg p-6 shadow-md">
+              <h3 className="text-xl font-bold mb-6 text-[#643861]">
+                Personal Info
+              </h3>
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">
+                      Full Name
+                    </label>
+                    <p className="w-full border rounded-md p-2">{user?.name}</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">
+                      Roll Number
+                    </label>
+                    <p className="w-full border rounded-md p-2">
+                      {user?.rollNumber}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">
+                      Branch
+                    </label>
+                    <p className="w-full border rounded-md p-2">
+                      {user?.branch}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">
+                      Program
+                    </label>
+                    <p className="w-full border rounded-md p-2">
+                      {user?.program}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">
+                      Gender
+                    </label>
+                    <p className="w-full border rounded-md p-2">
+                      {user?.gender}
+                    </p>
+                  </div>
+
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">
                       Hostel
                     </label>
-                    <select
-                      {...register("hostel", {
-                        required: "Hostel is required",
-                      })}
-                      className="w-full border rounded-md p-2"
-                    >
-                      <option value="">Select Hostel</option>
-                      {(watchGender === "male"
-                        ? maleHostels
-                        : femaleHostels
-                      ).map((hostel) => (
-                        <option key={hostel} value={hostel}>
-                          {hostel}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.hostel && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.hostel.message}
-                      </p>
-                    )}
+                    <p className="w-full border rounded-md p-2">
+                      {user?.hostel}
+                    </p>
                   </div>
-                )}
+                </div>
               </div>
-
-              <div className="flex justify-end mt-6">
-                <button
-                  type="submit"
-                  className="bg-[#643861] hover:bg-[#d35c13] text-white py-2 px-8 rounded-md transition-colors"
-                >
-                  Update Profile
-                </button>
-              </div>
-            </form>
-          </div>
+            </div>
+          )}
 
           <div className="bg-[#fcffdf] rounded-lg p-6 shadow-md mb-52">
             <h3 className="text-xl font-bold mb-6 text-[#643861]">
@@ -342,4 +421,10 @@ function ProfilePage() {
   );
 }
 
-export default ProfilePage;
+export default function ProfilePage() {
+  return (
+    <UserProvider>
+      <ProfilePageProps />
+    </UserProvider>
+  );
+}

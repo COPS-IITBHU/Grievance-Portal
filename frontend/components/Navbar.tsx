@@ -3,13 +3,18 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "@/public/IITBHU_LOGO.png";
-import IIT from "@/public/iit.jpg"
+import IIT from "@/public/iit.jpg";
+import { useUser, UserProvider } from "@/services/userContext";
+import { useRouter } from "next/navigation";
 
-function Navbar() {
+function NavbarProps() {
+  const { user } = useUser();
+  const router = useRouter();
+  console.log(user);
   return (
     <nav>
-      <div className="flex gap-2 justify-start md:justify-around md:gap-0 items-center bg-[#fcffdf] p-1 shadow-lg">
-        <Link href="/" className="flex items-center ml-4 md:ml-12">
+      <div className="flex gap-2 justify-start md:justify-around md:gap-0 items-center bg-[#fcffdf] p-1 shadow-lg px-5">
+        <Link href="/homePage" className="flex items-center ml-4 md:ml-12">
           <Image
             src={Logo}
             alt="Logo"
@@ -30,9 +35,27 @@ function Navbar() {
             className="h-20 mix-blend-multiply"
           />
         </div>
+        {user && (
+          <div className="flex items-center ml-auto cursor-pointer">
+            <Image
+              src={user.avatar}
+              alt="User Profile"
+              height={50}
+              width={50}
+              className="h-10 w-10 rounded-full"
+              onClick={() => router.push("/ProfilePage")}
+            />
+          </div>
+        )}
       </div>
     </nav>
   );
 }
 
-export default Navbar;
+export default function Navbar() {
+  return (
+    <UserProvider>
+      <NavbarProps />
+    </UserProvider>
+  );
+}
