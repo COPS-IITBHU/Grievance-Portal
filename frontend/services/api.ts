@@ -58,19 +58,18 @@ const authService = {
   isLoggedIn: () => {
     return !!localStorage.getItem("token");
   },
-  onboardUser: async (data: {
-    gender: string;
-    rollNumber: string;
-    program: string;
-    year: string;
-    hostel: string;
-    branch: string;
-    name: string;
-  }) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      throw new Error("No token found. Please log in first.");
-    }
+  onboardUser: async (
+    data: {
+      gender: string;
+      rollNumber: string;
+      program: string;
+      year: string;
+      hostel: string;
+      branch: string;
+      name: string;
+    },
+    token: string
+  ) => {
     try {
       const response = await axios.post(`${baseURL}/auth/onBoarding`, {
         token,

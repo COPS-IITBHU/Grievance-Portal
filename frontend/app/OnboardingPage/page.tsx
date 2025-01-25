@@ -16,7 +16,6 @@ function page() {
   }
   const token = searchParams.get("token") as string;
   if (token.trim() == "") return router.push("/homePage");
-  authService.setToken(token);
   const maleHostels: string[] = [
     "Aryabhatta Hostel",
     "CV Raman Hostel",
@@ -78,7 +77,7 @@ function page() {
         year: data.year,
         hostel: data.hostel,
       };
-      authService.onboardUser(userData);
+      authService.onboardUser(userData,token);
       reset();
       router.push("/homePage");
     } catch (error: any) {

@@ -1,19 +1,25 @@
-import express from 'express';
-import passport from 'passport';
-import jwt from 'jsonwebtoken';
-import { IUser, User } from '../models/User';
+import express from "express";
+import passport from "passport";
+import jwt from "jsonwebtoken";
+import { IUser, User } from "../models/User";
 
 const authRouter = express.Router();
-
-authRouter.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
 
 authRouter.get(
-  '/google/callback',
-  passport.authenticate('google', { failureRedirect: '/' }),
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+authRouter.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     const user = req.user as IUser;
-    const token = jwt.sign({ id: user._id, email: user.email, avatar: user.avatar }, process.env.JWT_SECRET);
+    const token = jwt.sign(
+      { id: user._id, email: user.email, avatar: user.avatar },
+      process.env.JWT_SECRET
+    );
     if (
       !user.gender ||
       !user.rollNumber ||
@@ -27,21 +33,24 @@ authRouter.get(
     res.redirect(`${frontendUrl}/loginPage?token=${token}`);
   }
 );
-authRouter.post('/onBoarding', async (req, res) => {
+authRouter.post("/onBoarding", async (req, res) => {
   try {
     const { token } = req.body;
     if (!token) {
-      return res.status(401).send('No token provided');
+      return res.status(401).send("No token provided");
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
-    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
+      id: string;
+    };
+
     const user = await User.findById(decoded.id);
     if (!user) {
-      return res.status(404).send('User not found');
+      return res.status(404).send("User not found");
     }
 
-    const { gender, rollNumber, program, yearOfStudy, hostel, branch } = req.body;
+    const { gender, rollNumber, program, yearOfStudy, hostel, branch } =
+      req.body;
     if (gender) user.gender = gender;
     if (rollNumber) user.rollNumber = rollNumber;
     if (program) user.program = program;
@@ -50,11 +59,11 @@ authRouter.post('/onBoarding', async (req, res) => {
     if (branch) user.branch = branch;
 
     await user.save();
-    
-    return res.status(200).send('User onboarding successfully updated');
+
+    res.redirect(`${frontendUrl}/loginPage?token=${token}`);
   } catch (error) {
-    console.error('Error in onboarding route:', error);
-    return res.status(500).send('Internal Server Error');
+    console.error("Error in onboarding route:", error);
+    return res.status(500).send("Internal Server Error");
   }
 });
 
