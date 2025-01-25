@@ -4,12 +4,12 @@ import { useForm } from "react-hook-form";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { authService } from "@/services/api";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { UserProvider, useUser } from "@/services/userContext";
+import { User, UserProvider, useUser } from "@/services/userContext";
 
-interface FormData {
+export interface FormData {
   name: string;
   rollNumber: string;
   branch: string;
@@ -21,7 +21,7 @@ interface FormData {
 
 function ProfilePageProps() {
   const [isEditing, setIsEditing] = useState(false);
-  const { user } = useUser();
+  const { user, setUser } = useUser();
 
   const [userEmail, setUserEmail] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
@@ -110,10 +110,38 @@ function ProfilePageProps() {
     fetchUserData();
   }, [router]);
 
+  useEffect(() => {
+    if (isEditing && user) {
+      setValue("name", user.name);
+      setValue("rollNumber", user.rollNumber);
+      setValue("branch", user.branch);
+      setValue("program", user.program);
+      setValue("year", user.yearOfStudy);
+      setValue("gender", (user.gender as "male") || "female");
+      setValue("hostel", user.hostel);
+    }
+  }, [isEditing, user, setValue]);
+
   const onSubmit = async (data: FormData) => {
     try {
-      console.log(data);
-      alert("Profile updated successfully");
+      const newData: User = {
+        ...user,
+        _id: user?._id || "",
+        email: user?.email || "",
+        role: user?.role || "",
+        avatar: user?.avatar || "",
+        name: data.name,
+        rollNumber: data.rollNumber,
+        branch: data.branch,
+        program: data.program,
+        yearOfStudy: data.year,
+        gender: (data.gender as "male") || "female",
+        hostel: data.hostel,
+      };
+      const id = user?._id as string;
+      await authService.UpdateUserProfile(id, newData);
+      setUser(newData);
+      setIsEditing(false);
     } catch (error) {
       console.error("Error updating profile:", error);
       alert("Failed to update profile");
