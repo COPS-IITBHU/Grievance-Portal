@@ -3,7 +3,7 @@ import { IGrievance } from './Grievance';
 import { v4 as uuidv4 } from 'uuid';
 
 interface IUser extends Document {
-  id: string;
+  _id: string; 
   name: string;
   email: string;
   role: string;
@@ -19,17 +19,17 @@ interface IUser extends Document {
 }
 
 const UserSchema: Schema<IUser> = new Schema({
-  id: { type: String, default: uuidv4, unique: true },
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  _id: { type: String, default: uuidv4 }, 
+  name: { type: String },
+  email: { type: String, unique: true },
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
   avatar: { type: String },
-  branch: { type: String, required: true },
-  gender: { type: String, required: true },
-  rollNumber: { type: String, required: true, unique: true },
-  program: { type: String, required: true },
-  yearOfStudy: { type: String, required: true },
-  hostel: { type: String, required: true },
+  branch: { type: String },
+  gender: { type: String },
+  rollNumber: { type: String, unique: true },
+  program: { type: String },
+  yearOfStudy: { type: String },
+  hostel: { type: String },
   grievances: [{ type: Schema.Types.ObjectId, ref: 'Grievance' }],
   created_at: { type: Date, default: Date.now },
 });

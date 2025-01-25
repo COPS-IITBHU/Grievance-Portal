@@ -1,13 +1,13 @@
-import axios from 'axios';
-import { Grievance } from '../types/grievance';
+import axios from "axios";
+import { Grievance } from "../types/grievance";
 
-const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 
 const api = axios.create({
   baseURL: baseURL,
   timeout: 30000,
   headers: {
-    'Content-Type': 'multipart/form-data',
+    "Content-Type": "multipart/form-data",
   },
 });
 
@@ -21,22 +21,21 @@ api.interceptors.request.use((config) => {
 
 const grievanceService = {
   getAll: async (): Promise<Grievance[]> => {
-    const response = await api.get('/grievance');
+    const response = await api.get("/grievance");
     return response.data;
   },
 
   create: async (formData: FormData): Promise<Grievance> => {
     try {
-      const response = await api.post('/grievance', formData);
+      const response = await api.post("/grievance", formData);
       return response.data;
     } catch (error: any) {
-      if (error.code === 'ECONNABORTED') {
-        throw new Error('Request timed out. Please try again.');
+      if (error.code === "ECONNABORTED") {
+        throw new Error("Request timed out. Please try again.");
       }
       throw error;
     }
   },
-
 };
 
 const authService = {
@@ -45,44 +44,70 @@ const authService = {
   },
 
   setToken: (token: string) => {
-    localStorage.setItem('token', token);
+    localStorage.setItem("token", token);
   },
 
   getToken: () => {
-    return localStorage.getItem('token');
+    return localStorage.getItem("token");
   },
 
   logout: () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
   },
 
   isLoggedIn: () => {
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem("token");
   },
-
-  isOnboarded: () =>{
-    
-  }
+  onboardUser: async (data: {
+    gender: string;
+    rollNumber: string;
+    program: string;
+    year: string;
+    hostel: string;
+    branch: string;
+    name: string;
+  }) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("No token found. Please log in first.");
+    }
+    try {
+      const response = await axios.post(`${baseURL}/auth/onBoarding`, {
+        token,
+        ...data,
+      });
+      return response.data;
+    } catch (error: any) {
+      if (error.response) {
+        throw new Error(error.response.data);
+      }
+      throw error;
+    }
+  },
 };
 
 const adminService = {
   getAllGrievances: async (): Promise<Grievance[]> => {
-    const response = await api.get('/admin/grievances');
+    const response = await api.get("/admin/grievances");
     return response.data;
   },
 
-  verifyGrievance: async (id: string, isPending: boolean, tags?: string[]): Promise<Grievance> => {
+  verifyGrievance: async (
+    id: string,
+    isPending: boolean,
+    tags?: string[]
+  ): Promise<Grievance> => {
     const response = await api.put(`/admin/${id}/verify`, {
       isPending,
-      tags: tags ? tags : undefined
+      tags: tags ? tags : undefined,
     });
     return response.data;
   },
 
   updateProgress: async (id: string, images: File[]): Promise<Grievance> => {
     const formData = new FormData();
-    images.forEach(image => {
-      formData.append('progressImages', image);
+    images.forEach((image) => {
+      formData.append("progressImages", image);
     });
     const response = await api.put(`/admin/${id}/progress`, formData);
     return response.data;
@@ -91,10 +116,10 @@ const adminService = {
     const response = await api.put(`/admin/${id}/reject`, {
       tags: tags ? tags : undefined,
       isRejected: true,
-      isPending: false
+      isPending: false,
     });
     return response.data;
-  }
+  },
 };
 
 export { grievanceService, authService, adminService };
