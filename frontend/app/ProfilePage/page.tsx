@@ -21,7 +21,7 @@ export interface FormData {
 
 function ProfilePageProps() {
   const [isEditing, setIsEditing] = useState(false);
-  const { user, setUser } = useUser();
+  const { user, setUser, logout } = useUser();
 
   const [userEmail, setUserEmail] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
@@ -100,7 +100,7 @@ function ProfilePageProps() {
         }
       } catch (error) {
         console.error("Invalid token:", error);
-        authService.logout();
+        logout();
         router.push("/loginPage");
       } finally {
         setLoading(false);
@@ -195,7 +195,7 @@ function ProfilePageProps() {
                 </button>
                 <button
                   onClick={() => {
-                    authService.logout();
+                    logout();
                     router.push("/loginPage");
                   }}
                   className="bg-[#643861] hover:bg-red-600 text-white py-2 px-4 rounded-md transition-colors"
