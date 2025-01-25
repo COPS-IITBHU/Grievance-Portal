@@ -58,7 +58,7 @@ authRouter.post("/onBoarding", async (req, res) => {
 
     await user.save();
 
-    return res.redirect(`${frontendUrl}/loginPage?token=${token}`);
+    return res.status(200).json({ user });
   } catch (error) {
     console.error("Error in onboarding route:", error);
     return res.status(500).send("Internal Server Error");
