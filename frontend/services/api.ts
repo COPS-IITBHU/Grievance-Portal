@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Grievance } from "../types/grievance";
+import { useUser } from "./userContext";
 
 const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 
@@ -76,6 +77,25 @@ const authService = {
         ...data,
       });
       authService.setToken(token);
+      return response.data;
+    } catch (error: any) {
+      if (error.response) {
+        throw new Error(error.response.data);
+      }
+      throw error;
+    }
+  },
+  getUserProfile: async () => {
+    try {
+      const token = authService.getToken();
+      if (!token) {
+        throw new Error("Please log in to view profile.");
+      }
+      const response = await axios.get(`${baseURL}/user/profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error: any) {
       if (error.response) {
