@@ -10,6 +10,8 @@ import { configurePassport } from './config/passport';
 import authRouter from './routes/auth';
 import grievanceRouter from './routes/grievance';
 import adminRouter from './routes/admin';
+import userRouter from './routes/user';
+
 
 dotenv.config();
 
@@ -52,6 +54,8 @@ app.get('/', (req, res) => {
 app.use('/auth', authRouter);
 app.use('/grievance', grievanceRouter);
 app.use('/admin', adminRouter);
+app.use('/user', userRouter);
+
 
 // Start the server
 app.listen(PORT, () => {

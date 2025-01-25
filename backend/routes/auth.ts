@@ -43,24 +43,22 @@ authRouter.post("/onBoarding", async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
       id: string;
     };
-
     const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(404).send("User not found");
     }
 
-    const { gender, rollNumber, program, yearOfStudy, hostel, branch } =
-      req.body;
+    const { gender, rollNumber, program, year, hostel, branch } = req.body;
     if (gender) user.gender = gender;
     if (rollNumber) user.rollNumber = rollNumber;
     if (program) user.program = program;
-    if (yearOfStudy) user.yearOfStudy = yearOfStudy;
+    if (year) user.yearOfStudy = year;
     if (hostel) user.hostel = hostel;
     if (branch) user.branch = branch;
 
     await user.save();
 
-    res.redirect(`${frontendUrl}/loginPage?token=${token}`);
+    return res.redirect(`${frontendUrl}/loginPage?token=${token}`);
   } catch (error) {
     console.error("Error in onboarding route:", error);
     return res.status(500).send("Internal Server Error");

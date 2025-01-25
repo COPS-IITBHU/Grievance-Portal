@@ -75,6 +75,7 @@ const authService = {
         token,
         ...data,
       });
+      authService.setToken(token);
       return response.data;
     } catch (error: any) {
       if (error.response) {

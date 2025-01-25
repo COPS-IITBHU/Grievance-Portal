@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { authService, grievanceService } from "@/services/api";
 import { useRouter } from "next/navigation";
@@ -10,10 +10,14 @@ import { useSearchParams } from "next/navigation";
 function page() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const localToken = localStorage.getItem("token");
-  if (localToken) {
-    return router.push("/homePage");
-  }
+  useEffect(() => {
+    const localToken =
+      typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (localToken) {
+      router.push("/homePage");
+    }
+  }, [router]);
+
   const token = searchParams.get("token") as string;
   if (token.trim() == "") return router.push("/homePage");
   const maleHostels: string[] = [
@@ -77,7 +81,7 @@ function page() {
         year: data.year,
         hostel: data.hostel,
       };
-      authService.onboardUser(userData,token);
+      authService.onboardUser(userData, token);
       reset();
       router.push("/homePage");
     } catch (error: any) {
