@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import GrievanceCard from "@/components/GrievanceCard";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -12,7 +12,18 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const router = useRouter();
-
+  const searchParams = useSearchParams();
+  
+  useEffect(() => {
+    const token = searchParams.get("token");
+    if (token) {
+      authService.setToken(token);
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("token");
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      router.replace(newUrl);
+    }
+  }, [router]);
   useEffect(() => {
     if (!authService.isLoggedIn()) {
       router.push("/loginPage");
@@ -41,7 +52,10 @@ export default function Home() {
     <>
       <Navbar />
       <div className="flex flex-col items-center justify-center">
-        <button onClick={() => router.push("/grievancePage")} className="bg-[#643861] hover:bg-blue-600 text-white py-2 px-4 rounded-md transition-colors mt-5 ml-auto mr-5">
+        <button
+          onClick={() => router.push("/grievancePage")}
+          className="bg-[#643861] hover:bg-blue-600 text-white py-2 px-4 rounded-md transition-colors mt-5 ml-auto mr-5"
+        >
           Make Your Grievance
         </button>
         <div className="flex flex-wrap align-middle justify-center items-center mt-10 mb-14 w-[80%] ">

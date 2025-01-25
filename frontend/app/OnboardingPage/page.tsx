@@ -82,8 +82,7 @@ function page() {
         hostel: data.hostel,
       };
       authService.onboardUser(userData, token);
-      reset();
-      router.push("/homePage");
+      router.push(`/homePage?token=${token}`);
     } catch (error: any) {
       console.error("Error submitting grievance:", error);
       if (error.response?.status === 500) {
@@ -93,6 +92,7 @@ function page() {
       } else {
         alert("Failed to submit grievance");
       }
+      reset();
     }
   };
 
