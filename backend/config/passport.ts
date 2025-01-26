@@ -1,10 +1,12 @@
-import passport from 'passport';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { User, IUser } from '../models/User';
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { User, IUser } from "../models/User";
 
 export const configurePassport = () => {
   if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-    throw new Error('Google OAuth credentials not found in environment variables');
+    throw new Error(
+      "Google OAuth credentials not found in environment variables"
+    );
   }
 
   passport.serializeUser((user: IUser, done) => {
@@ -25,31 +27,37 @@ export const configurePassport = () => {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: '/auth/google/callback',
+        callbackURL: "/auth/google/callback",
       },
       async (accessToken, refreshToken, profile, done) => {
-      try {
-        if (!profile.emails || !profile.emails[0].value) {
-          return done(null, false, { message: 'Unauthorized' });
-        }
-        const email = profile.emails[0].value;
-        if (!email.endsWith('@itbhu.ac.in') && !email.endsWith('@iitbhu.ac.in')) {
-          return done(null, false, { message: 'Unauthorized email domain' });
-        }
+        try {
+          if (!profile.emails || !profile.emails[0].value) {
+            return done(null, false, { message: "Unauthorized" });
+          }
+          const email = profile.emails[0].value;
+          if (
+            !email.endsWith("@itbhu.ac.in") &&
+            !email.endsWith("@iitbhu.ac.in")
+          ) {
+            return done(null, false, { message: "Unauthorized email domain" });
+          }
 
-        let user = await User.findOne({ email });
-        if (!user) {
-          user = await User.create({
-            name: profile.displayName,
-            email: profile.emails[0].value,
-            picture: profile.photos[0].value,
-          });
-        } 
-        return done(null, user);
-      } catch (error) {
-        return done(error, false);
+          let user = await User.findOne({ email });
+          if (!user) {
+            user = await User.create({
+              name: profile.displayName,
+              email: profile.emails[0].value,
+              picture: profile.photos[0].value,
+            });
+          } else if (!user.avatar) {
+            user.avatar = profile.photos[0].value;
+            await user.save();
+          }
+          return done(null, user);
+        } catch (error) {
+          return done(error, false);
+        }
       }
-    }
-  )
-);
+    )
+  );
 };
