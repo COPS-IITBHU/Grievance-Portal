@@ -47,7 +47,7 @@ export const configurePassport = () => {
             user = await User.create({
               name: profile.displayName,
               email: profile.emails[0].value,
-              picture: profile.photos[0].value,
+              avatar: profile.photos[0].value,
             });
           } else if (!user.avatar) {
             user.avatar = profile.photos[0].value;
