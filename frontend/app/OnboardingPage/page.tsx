@@ -14,12 +14,12 @@ function page() {
     const localToken =
       typeof window !== "undefined" ? localStorage.getItem("token") : null;
     if (localToken) {
-      router.push("/homePage");
+      router.push("/");
     }
   }, [router]);
 
   const token = searchParams.get("token") as string;
-  if (token.trim() == "") return router.push("/homePage");
+  if (token.trim() == "") return router.push("/");
   const maleHostels: string[] = [
     "Aryabhatta Hostel",
     "CV Raman Hostel",
@@ -82,7 +82,7 @@ function page() {
         hostel: data.hostel,
       };
       authService.onboardUser(userData, token);
-      router.push(`/homePage?token=${token}`);
+      router.push(`/?token=${token}`);
     } catch (error: any) {
       console.error("Error submitting grievance:", error);
       if (error.response?.status === 500) {
