@@ -34,17 +34,22 @@ const grievanceService = {
     return response.data;
   },
 
-  create: async (formData: FormData): Promise<Grievance> => {
+  create: async (formData: any): Promise<Grievance> => {
     try {
       const token = authService.getToken();
       if (!token) {
         throw new Error("Please log in to create a grievance.");
       }
-      const response = await api.post("/grievance", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.post(
+        "/grievance",
+        { ...formData },
+        {
+          headers: {
+            "Content-Type": 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       return response.data;
     } catch (error: any) {
       if (error.code === "ECONNABORTED") {

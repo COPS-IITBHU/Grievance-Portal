@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 function NavbarProps() {
   const { user } = useUser();
   const router = useRouter();
-  console.log(user);
   return (
     <nav>
       <div className="flex gap-2 justify-start md:justify-around md:gap-0 items-center bg-[#fcffdf] p-1 shadow-lg px-5">
