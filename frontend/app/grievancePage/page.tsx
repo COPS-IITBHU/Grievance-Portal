@@ -99,7 +99,7 @@ function GrievancePageProps() {
       setSelectedImages([]);
       setSelectedTags([]);
       alert("Grievance submitted successfully!");
-      router.push("/homePage");
+      router.push("/");
     } catch (error: any) {
       console.error("Error submitting grievance:", error);
       if (error.response?.status === 500) {
