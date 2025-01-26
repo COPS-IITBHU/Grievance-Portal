@@ -22,13 +22,29 @@ api.interceptors.request.use((config) => {
 
 const grievanceService = {
   getAll: async (): Promise<Grievance[]> => {
-    const response = await api.get("/grievance");
+    const token = authService.getToken();
+    if (!token) {
+      throw new Error("Please log in to view grievances.");
+    }
+    const response = await api.get("/grievance", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   },
 
   create: async (formData: FormData): Promise<Grievance> => {
     try {
-      const response = await api.post("/grievance", formData);
+      const token = authService.getToken();
+      if (!token) {
+        throw new Error("Please log in to create a grievance.");
+      }
+      const response = await api.post("/grievance", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error: any) {
       if (error.code === "ECONNABORTED") {

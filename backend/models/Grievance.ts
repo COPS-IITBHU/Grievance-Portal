@@ -28,7 +28,7 @@ const GrievanceSchema: Schema<IGrievance> = new Schema({
   isPending: { type: Boolean, default: true },
   isComplete: { type: Boolean, default: false },
   isRejected: { type: Boolean, default: false },
-  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  user: { type: Schema.Types.String, ref: 'User', required: true },
   name: { type: String, required: true },
   phoneNumber: { type: String, required: true },
   roomNumber: { type: String, required: true },
