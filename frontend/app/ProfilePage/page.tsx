@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { authService } from "@/services/api";
 import { jwtDecode } from "jwt-decode";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { User, UserProvider, useUser } from "@/services/userContext";
 
@@ -27,6 +27,7 @@ function ProfilePageProps() {
   const [profilePicture, setProfilePicture] = useState("");
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const maleHostels: string[] = [
     "Aryabhatta Hostel",
@@ -83,6 +84,18 @@ function ProfilePageProps() {
   useEffect(() => {
     setValue("hostel", "");
   }, [watchGender, setValue]);
+
+  useEffect(() => {
+    const token = searchParams.get("token");
+    if (token) {
+      authService.setToken(token);
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("token");
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      router.replace(newUrl);
+    }
+  }, [router]);
+
 
   useEffect(() => {
     const fetchUserData = async () => {

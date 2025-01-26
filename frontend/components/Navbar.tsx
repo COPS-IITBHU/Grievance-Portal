@@ -14,7 +14,7 @@ function NavbarProps() {
   return (
     <nav>
       <div className="flex gap-2 justify-start md:justify-around md:gap-0 items-center bg-[#fcffdf] p-1 shadow-lg px-5">
-        <Link href="/homePage" className="flex items-center ml-4 md:ml-12">
+        <Link href="/" className="flex items-center ml-4 md:ml-12">
           <Image
             src={Logo}
             alt="Logo"
