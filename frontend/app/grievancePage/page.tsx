@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { UserProvider, useUser } from "@/services/userContext";
+import { uploadFiles } from "@/services/upload";
 
 const tagOptions = [
   "Hostel",
@@ -77,23 +78,23 @@ function GrievancePageProps() {
   const onSubmitStep2 = async (data: any) => {
     const combinedData = { ...formData, ...data };
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("name", combinedData.name);
-      formDataToSend.append("phoneNumber", combinedData.mobile);
-      formDataToSend.append("roomNumber", combinedData.room);
-      formDataToSend.append("heading", combinedData.heading);
-      formDataToSend.append("content", combinedData.description);
-      if (user?._id) {
-        formDataToSend.append("userId", user._id);
-      }
+      const formDataToSend = {
+        name: combinedData.name,
+        phoneNumber: combinedData.mobile,
+        roomNumber: combinedData.room,
+        heading: combinedData.heading,
+        content: combinedData.description,
+        userId: user?._id,
+        tags: combinedData.tags,
+        imagesUrl: await uploadFiles(
+          selectedImages.map((image) => ({
+        file: image,
+          }))
+        ),
+      };
 
-      combinedData.tags.forEach((tag: string) =>
-        formDataToSend.append("tags[]", tag)
-      );
-      selectedImages.forEach((image) => {
-        formDataToSend.append("images", image);
-      });
-
+      // Log the form data before sending
+      console.log(formDataToSend);
       await grievanceService.create(formDataToSend);
       reset();
       setSelectedImages([]);

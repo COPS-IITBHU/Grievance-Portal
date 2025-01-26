@@ -5,15 +5,19 @@ import { uploadImages } from "../middlewares/uploadMiddleware";
 
 const grievanceRouter = express.Router();
 
-grievanceRouter.post("/", authMiddleware, uploadImages, async (req, res) => {
+grievanceRouter.post("/", authMiddleware, async (req, res) => {
   try {
-    const { userId, name, phoneNumber, roomNumber, heading, content, tags } =
-      req.body;
+    const {
+      userId,
+      name,
+      phoneNumber,
+      roomNumber,
+      heading,
+      content,
+      tags,
+      imagesUrl,
+    } = req.body;
     console.log(req.body);
-    // Extract image URLs from Cloudinary response
-    const imageUrls = (req.files as Express.Multer.File[]).map(
-      (file) => (file as any).path
-    );
 
     const grievance = new Grievance({
       name,
@@ -22,7 +26,7 @@ grievanceRouter.post("/", authMiddleware, uploadImages, async (req, res) => {
       heading,
       content,
       tags: Array.isArray(tags) ? tags : [tags],
-      related_images: imageUrls,
+      related_images: imagesUrl,
       user: userId,
     });
 
