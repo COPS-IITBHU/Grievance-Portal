@@ -38,7 +38,7 @@ function NavbarProps() {
         {user && (
           <div className="flex items-center ml-auto cursor-pointer">
             <Image
-              src={user.avatar}
+              src={user.avatar || "/def_pic.png"}
               alt="User Profile"
               height={50}
               width={50}
