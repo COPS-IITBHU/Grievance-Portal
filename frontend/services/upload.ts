@@ -1,7 +1,11 @@
 import axios from "axios";
 
-const cloud_name = process.env.REACT_APP_CLOUD_NAME as string;
-const cloud_secret = process.env.REACT_APP_CLOUD_SECRET as string;
+const cloud_name = process.env.REACT_APP_CLOUD_NAME;
+const cloud_secret = process.env.REACT_APP_CLOUD_SECRET;
+
+if (!cloud_name || !cloud_secret) {
+  throw new Error("Cloudinary configuration is missing");
+}
 
 export const uploadFiles = async (files: any) => {
   let formData = new FormData();
@@ -17,6 +21,7 @@ export const uploadFiles = async (files: any) => {
 };
 
 export const uploadToCloudinary = async (formData: any) => {
+  console.log(cloud_name, cloud_secret);
   return new Promise(async (resolve) => {
     return await axios
       .post(

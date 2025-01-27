@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import { grievanceService, authService } from "@/services/api";
 import { Grievance } from "@/types/grievance";
 
-export default function Home() {
+export default function HomePage() {
   const [grievances, setGrievances] = useState<Grievance[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

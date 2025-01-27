@@ -26,6 +26,7 @@ function NavbarProps() {
             Grievance and Enquiry Portal
           </h1>
         </div>
+        <div className="grow"></div>
         <div className="mr-4 md:mr-12 hidden md:block">
           <Image
             src={IIT}
