@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const cloud_name = process.env.REACT_APP_CLOUD_NAME;
-const cloud_secret = process.env.REACT_APP_CLOUD_SECRET;
+const cloud_name = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+const cloud_secret = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_SECRET;
 
 if (!cloud_name || !cloud_secret) {
   throw new Error("Cloudinary configuration is missing");
