@@ -122,7 +122,7 @@ function GrievancePageProps() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen flex items-center justify-center p-3">
+      <div className="min-h-screen flex items-center justify-center p-3 flex-col">
         <div
           className="w-full max-w-2xl bg-[#fcffdf] drop-shadow-lg rounded-lg shadow-md shadow-[#864e82] p-6 mb-5"
           style={{ border: "1px solid #643861" }}
@@ -331,6 +331,11 @@ function GrievancePageProps() {
               </div>
             </form>
           )}
+        </div>
+        <div className="text-center mt-4">
+        <p className="text-sm text-gray-600">
+          If you want to keep your identity hidden, use our <a href="https://forms.gle/GkzVG2uAVu33egxA7" className="text-blue-500 underline">Google Form</a>.
+        </p>
         </div>
       </div>
       <Footer />

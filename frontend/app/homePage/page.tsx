@@ -59,20 +59,24 @@ export default function HomePage() {
           Make Your Grievance
         </button>
         <div className="flex flex-wrap align-middle justify-center items-center mt-10 mb-14 w-[80%] ">
-          {grievances.map((grievance) => (
-            <GrievanceCard
-              key={grievance._id}
-              id={grievance._id}
-              title={grievance.heading}
-              description={grievance.content}
-              status={grievance.isComplete}
-              votes={grievance.upvote_count}
-              tags={grievance.tags}
-              userImages={grievance.related_images}
-              adminImages={grievance.progress_images}
-              adminComments={[]}
-            />
-          ))}
+          {grievances.length === 0 ? (
+            <div className="text-gray-500 text-lg">No active grievances found.</div>
+          ) : (
+            grievances.map((grievance) => (
+              <GrievanceCard
+          key={grievance._id}
+          id={grievance._id}
+          title={grievance.heading}
+          description={grievance.content}
+          status={grievance.isComplete}
+          votes={grievance.upvote_count}
+          tags={grievance.tags}
+          userImages={grievance.related_images}
+          adminImages={grievance.progress_images}
+          adminComments={[]}
+              />
+            ))
+          )}
         </div>
       </div>
       <Footer />

@@ -110,7 +110,8 @@ const authService = {
     try {
       const token = authService.getToken();
       if (!token) {
-        throw new Error("Please log in to view profile.");
+        // throw new Error("Please log in to view profile.");
+        console.log("Please log in to view profile.");
       }
       const response = await axios.get(`${baseURL}/user/profile`, {
         headers: {
@@ -120,7 +121,8 @@ const authService = {
       return response.data;
     } catch (error: any) {
       if (error.response) {
-        throw new Error(error.response.data);
+        // throw new Error(error.response.data);
+        console.log(error.response.data);
       }
       throw error;
     }

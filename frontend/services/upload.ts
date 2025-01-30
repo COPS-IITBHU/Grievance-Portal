@@ -1,15 +1,19 @@
 import axios from "axios";
 
-const cloud_name = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-const cloud_secret = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_SECRET;
-
+const cloud_name = process.env.NEXT_PUBLIC_CLOUD_NAME;
+const cloud_secret = process.env.NEXT_PUBLIC_CLOUD_SECRET;
 if (!cloud_name || !cloud_secret) {
   throw new Error("Cloudinary configuration is missing");
+  // console.log("Cloudinary configuration is missing");
 }
 
 export const uploadFiles = async (files: any) => {
   let formData = new FormData();
-  formData.append("upload_preset", cloud_secret);
+  if (cloud_secret) {
+    formData.append("upload_preset", cloud_secret);
+  } else {
+    throw new Error("Cloudinary upload secret is missing");
+  }
   let uploaded = [];
   for (const f of files) {
     const { file } = f;
