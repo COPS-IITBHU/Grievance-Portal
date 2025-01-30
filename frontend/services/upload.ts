@@ -3,8 +3,8 @@ import axios from "axios";
 const cloud_name = process.env.NEXT_PUBLIC_CLOUD_NAME;
 const cloud_secret = process.env.NEXT_PUBLIC_CLOUD_SECRET;
 if (!cloud_name || !cloud_secret) {
-  throw new Error("Cloudinary configuration is missing");
-  // console.log("Cloudinary configuration is missing");
+  // throw new Error("Cloudinary configuration is missing");
+  console.log("Cloudinary configuration is missing");
 }
 
 export const uploadFiles = async (files: any) => {

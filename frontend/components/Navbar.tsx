@@ -25,10 +25,10 @@ function NavbarProps() {
             src={Logo}
             alt="Logo"
             height={80}
-            className="h-14 md:h-20 w-auto"
+            className="h-12 md:h-20 w-auto"
           />
         </Link>
-        <div className="text-center px-2">
+        <div className="text-center px-3">
           <h1 className="text-xl md:text-3xl font-bold text-[#643861]">
             Grievance and Enquiry Portal
           </h1>
