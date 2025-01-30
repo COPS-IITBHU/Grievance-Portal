@@ -123,6 +123,7 @@ const authService = {
       if (error.response) {
         // throw new Error(error.response.data);
         console.log(error.response.data);
+        window.location.href = `${baseURL}/loginPage`;
       }
       // throw error;
     }
