@@ -172,37 +172,37 @@ function ProfilePageProps() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen my-4 p-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto space-y-6">
-          <div className="bg-[#fcffdf] rounded-lg p-6 shadow-md">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-4">
+      <div className="min-h-screen my-2 md:my-4 p-3 md:py-6 bg-gray-50">
+        <div className="max-w-4xl mx-auto space-y-4 md:space-y-6">
+          <div className="bg-[#fcffdf] rounded-lg p-4 md:p-6 shadow-md">
+              <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0">
+              <div className="flex flex-col md:flex-row items-center md:space-x-4">
                 {profilePicture ? (
                   <Image
                     src={profilePicture}
                     alt="Profile"
-                    height={64}
-                    width={64}
-                    className="rounded-full"
+                    height={56}
+                    width={56}
+                    className="rounded-full w-14 h-14 md:w-16 md:h-16"
                   />
                 ) : (
-                  <div className="w-20 h-20 rounded-full bg-[#643861] flex items-center justify-center">
-                    <span className="text-3xl font-bold text-white">
+                  <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#643861] flex items-center justify-center">
+                    <span className="text-2xl md:text-3xl font-bold text-white">
                       {userEmail ? userEmail[0].toUpperCase() : "?"}
                     </span>
                   </div>
                 )}
                 <div>
-                  <h2 className="text-2xl font-bold text-[#643861]">
+                  <h2 className="text-xl md:text-2xl font-bold text-[#643861]">
                     My Profile
                   </h2>
-                  <p className="text-gray-600">{userEmail}</p>
+                  <p className="text-sm md:text-base text-gray-600">{userEmail}</p>
                 </div>
               </div>
-              <div className="flex space-x-4">
+              <div className="flex justify-center md:justify-end space-x-2 md:space-x-4">
                 <button
                   onClick={() => setIsEditing(!isEditing)}
-                  className="bg-[#643861] hover:bg-blue-600 text-white py-2 px-4 rounded-md transition-colors"
+                  className="bg-[#643861] hover:bg-blue-600 text-white py-1.5 md:py-2 px-3 md:px-4 rounded-md text-sm md:text-base transition-colors"
                 >
                   {isEditing ? "Cancel" : "Edit"}
                 </button>
@@ -211,7 +211,7 @@ function ProfilePageProps() {
                     logout();
                     router.push("/loginPage");
                   }}
-                  className="bg-[#643861] hover:bg-red-600 text-white py-2 px-4 rounded-md transition-colors"
+                  className="bg-[#643861] hover:bg-red-600 text-white py-1.5 md:py-2 px-3 md:px-4 rounded-md text-sm md:text-base transition-colors"
                 >
                   Logout
                 </button>
@@ -220,20 +220,20 @@ function ProfilePageProps() {
           </div>
 
           {isEditing ? (
-            <div className="bg-[#fcffdf] rounded-lg p-6 shadow-md">
-              <h3 className="text-xl font-bold mb-6 text-[#643861]">
+            <div className="bg-[#fcffdf] rounded-lg p-4 md:p-6 shadow-md">
+              <h3 className="text-lg md:text-xl font-bold mb-4 md:mb-6 text-[#643861]">
                 Personal Info
               </h3>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 md:space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">
+                    <label className="block text-gray-700 text-sm md:text-base font-medium mb-1 md:mb-2">
                       Full Name
                     </label>
                     <input
                       type="text"
                       {...register("name", { required: "Name is required" })}
-                      className="w-full border rounded-md p-2"
+                      className="w-full border rounded-md p-1.5 md:p-2 text-sm md:text-base"
                     />
                     {errors.name && (
                       <p className="text-red-500 text-sm mt-1">
@@ -243,7 +243,7 @@ function ProfilePageProps() {
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">
+                    <label className="block text-gray-700 text-sm md:text-base font-medium mb-1 md:mb-2">
                       Roll Number
                     </label>
                     <input
@@ -251,7 +251,7 @@ function ProfilePageProps() {
                       {...register("rollNumber", {
                         required: "Roll number is required",
                       })}
-                      className="w-full border rounded-md p-2"
+                      className="w-full border rounded-md p-1.5 md:p-2 text-sm md:text-base"
                     />
                     {errors.rollNumber && (
                       <p className="text-red-500 text-sm mt-1">
@@ -261,14 +261,14 @@ function ProfilePageProps() {
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">
+                    <label className="block text-gray-700 text-sm md:text-base font-medium mb-1 md:mb-2">
                       Branch
                     </label>
                     <select
                       {...register("branch", {
                         required: "Branch is required",
                       })}
-                      className="w-full border rounded-md p-2"
+                      className="w-full border rounded-md p-1.5 md:p-2 text-sm md:text-base"
                     >
                       <option value="">Select Branch</option>
                       {Branches.map((branch) => (
@@ -285,14 +285,14 @@ function ProfilePageProps() {
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">
+                    <label className="block text-gray-700 text-sm md:text-base font-medium mb-1 md:mb-2">
                       Program
                     </label>
                     <select
                       {...register("program", {
                         required: "Program is required",
                       })}
-                      className="w-full border rounded-md p-2"
+                      className="w-full border rounded-md p-1.5 md:p-2 text-sm md:text-base"
                     >
                       <option value="">Select Program</option>
                       <option value="B.Tech">B.Tech</option>
@@ -306,10 +306,10 @@ function ProfilePageProps() {
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">
+                    <label className="block text-gray-700 text-sm md:text-base font-medium mb-1 md:mb-2">
                       Gender
                     </label>
-                    <div className="flex gap-4">
+                    <div className="flex gap-2 md:gap-6">
                       <label className="inline-flex items-center">
                         <input
                           type="radio"
@@ -340,14 +340,14 @@ function ProfilePageProps() {
 
                   {watchGender && (
                     <div>
-                      <label className="block text-gray-700 font-medium mb-2">
+                      <label className="block text-gray-700 text-sm md:text-base font-medium mb-1 md:mb-2">
                         Hostel
                       </label>
                       <select
                         {...register("hostel", {
                           required: "Hostel is required",
                         })}
-                        className="w-full border rounded-md p-2"
+                        className="w-full border rounded-md p-1.5 md:p-2 text-sm md:text-base"
                       >
                         <option value="">Select Hostel</option>
                         {(watchGender === "male"
@@ -368,10 +368,10 @@ function ProfilePageProps() {
                   )}
                 </div>
 
-                <div className="flex justify-end mt-6">
+                <div className="flex justify-end mt-4 md:mt-6">
                   <button
                     type="submit"
-                    className="bg-[#643861] hover:bg-[#d35c13] text-white py-2 px-8 rounded-md transition-colors"
+                    className="bg-[#643861] hover:bg-[#d35c13] text-white py-1.5 md:py-2 px-6 md:px-8 rounded-md text-sm md:text-base transition-colors"
                   >
                     Update Profile
                   </button>
@@ -441,15 +441,15 @@ function ProfilePageProps() {
             </div>
           )}
 
-          <div className="bg-[#fcffdf] rounded-lg p-6 shadow-md mb-52">
-            <h3 className="text-xl font-bold mb-6 text-[#643861]">
+          <div className="bg-[#fcffdf] rounded-lg p-4 md:p-6 shadow-md mb-20 md:mb-52 pb-10">
+            <h3 className="text-lg md:text-xl font-bold mb-4 md:mb-6 text-[#643861]">
               My Grievances
             </h3>
-            <p className="text-gray-500 text-center">
+            <p className="text-gray-500 text-center text-sm md:text-base">
               No grievances found.
               <button
                 onClick={() => router.push("/grievancePage")}
-                className="text-[#643861] hover:text-[#d35c13] ml-2"
+                className="text-[#643861] hover:text-[#d35c13] ml-2 text-sm md:text-base"
               >
                 File a new grievance
               </button>
