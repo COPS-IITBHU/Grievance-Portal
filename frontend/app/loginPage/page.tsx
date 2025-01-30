@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authService } from "@/services/api";
 import { Suspense } from "react";
-import Navbar from "@/components/Navbar";
+// import Navbar from "@/components/Navbar";
 
 function LoginContent() {
   const router = useRouter();
@@ -20,7 +20,7 @@ function LoginContent() {
   return (
     <>
       <div className="min-h-screen">
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="mt-48 flex items-center justify-center ">
           <div className="bg-[#fcffdf] rounded-lg shadow-lg p-8 w-full max-w-md">
             <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">

@@ -124,7 +124,7 @@ const authService = {
         // throw new Error(error.response.data);
         console.log(error.response.data);
       }
-      throw error;
+      // throw error;
     }
   },
   UpdateUserProfile: async (id: string, data: User) => {
