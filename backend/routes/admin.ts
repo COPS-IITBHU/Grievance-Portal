@@ -28,6 +28,16 @@ adminRouter.put('/:id/reject', authMiddleware, async (req, res) => {
   res.json(grievance);
 });
 
+adminRouter.put('/:id/completed', authMiddleware, async (req, res) => {
+  const grievance = await Grievance.findById(req.params.id);
+  if (!grievance) {
+    return res.status(404).json({ message: 'Grievance not found' });
+  }
+  grievance.isComplete = true;
+  await grievance.save();
+  res.json(grievance);
+});
+
 adminRouter.put('/:id/progress', authMiddleware, upload.array('progressImages', 5), async (req, res) => {
   try {
     const grievance = await Grievance.findById(req.params.id);
