@@ -15,41 +15,57 @@ export default function Page() {
     approved: 0,
     rejected: 0,
     pending: 0,
+    completed: 0,
   });
 
   const ActionCellRenderer = (props: any) => {
     const { data } = props;
+
     const handleAccept = async () => {
       try {
-        const currentTags = data.Tags.split(',').map((t: string) => t.trim());
+        const currentTags = data.Tags.split(",").map((t: string) => t.trim());
         await adminService.verifyGrievance(data._id, false, currentTags);
         data.Status = "Approved";
         props.api.refreshCells({ rowNodes: [props.node], force: true });
         updateRowData(data);
         updateStats("approved");
         alert("Grievance approved successfully");
-      } catch (error) {
+      } catch {
         alert("Failed to approve grievance");
       }
     };
+
     const handleReject = async () => {
       try {
-        const currentTags = data.Tags.split(',').map((t: string) => t.trim());
+        const currentTags = data.Tags.split(",").map((t: string) => t.trim());
         await adminService.rejectGrievance(data._id, currentTags);
         data.Status = "Rejected";
         props.api.refreshCells({ rowNodes: [props.node], force: true });
         updateRowData(data);
         updateStats("rejected");
         alert("Grievance rejected successfully");
-      } catch (error) {
+      } catch {
         alert("Failed to reject grievance");
       }
     };
+
+    const handleComplete = async () => {
+      try {
+        await adminService.markGrievanceComplete(data._id);
+        data.Status = "Completed";
+        props.api.refreshCells({ rowNodes: [props.node], force: true });
+        updateRowData(data);
+        updateStats("completed");
+        alert("Grievance marked as completed");
+      } catch {
+        alert("Failed to complete grievance");
+      }
+    };
+
     const updateRowData = (updatedData: any) => {
       setRowData((prevData) =>
         prevData.map((row) =>
-          row.Heading === updatedData.Heading &&
-            row.Content === updatedData.Content
+          row.Heading === updatedData.Heading && row.Content === updatedData.Content
             ? updatedData
             : row
         )
@@ -75,9 +91,12 @@ export default function Page() {
       );
     } else if (data.Status === "Approved") {
       return (
-        <div className="w-full flex items-center justify-center h-full">
-          <button className="bg-[#5d3459] flex items-center justify-center text-white font-semibold  px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm cursor-default">
-            Approved
+        <div className="flex items-center justify-center space-x-2">
+          <button
+            onClick={handleComplete}
+            className="bg-blue-700 hover:bg-blue-600 text-white font-semibold px-2 md:px-3 py-1.5 md:py-2 shadow-md transition duration-300 rounded-full text-xs md:text-sm"
+          >
+            Complete
           </button>
         </div>
       );
@@ -86,6 +105,14 @@ export default function Page() {
         <div className="w-full flex items-center justify-center h-full">
           <button className="bg-red-700 flex items-center justify-center text-white font-semibold px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm cursor-default">
             Rejected
+          </button>
+        </div>
+      );
+    } else if (data.Status === "Completed") {
+      return (
+        <div className="w-full flex items-center justify-center h-full">
+          <button className="bg-green-700 text-white font-semibold px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm cursor-default">
+            Completed
           </button>
         </div>
       );
@@ -111,12 +138,12 @@ export default function Page() {
         setIsEditing(false);
         if (editedTags !== data.Tags) {
           try {
-            const tags = editedTags.split(',').map((tag: string) => tag.trim());
+            const tags = editedTags.split(",").map((tag: string) => tag.trim());
             await adminService.verifyGrievance(data._id, data.Status === "Pending", tags);
             data.Tags = editedTags;
             api.refreshCells({ rowNodes: [node], force: true });
-          } catch (error) {
-            alert('Failed to update tags');
+          } catch {
+            alert("Failed to update tags");
             setEditedTags(data.Tags);
           }
         }
@@ -150,16 +177,22 @@ export default function Page() {
       </div>
     );
   };
+
   const contentCellRenderer = (props: any) => {
     const { data } = props;
     return (
       <div className="flex flex-col w-full h-full p-2">
-        <h2 className="text-sm md:text-lg font-semibold text-gray-800 line-clamp-2">{data.Heading}</h2>
-        <p className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-2">{data.Content}</p>
+        <h2 className="text-sm md:text-lg font-semibold text-gray-800 line-clamp-2">
+          {data.Heading}
+        </h2>
+        <p className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-2">
+          {data.Content}
+        </p>
       </div>
     );
   };
-  const [colDefs, setColDefs] = useState<ColDef[]>([
+
+  const [colDefs] = useState<ColDef[]>([
     { field: "Grievance", flex: 2, minWidth: 200, cellRenderer: contentCellRenderer },
     { field: "Tags", flex: 1.5, minWidth: 150, cellRenderer: TagsCellRenderer },
     { field: "Status", minWidth: 100 },
@@ -172,6 +205,7 @@ export default function Page() {
       cellRenderer: ActionCellRenderer,
     },
   ]);
+
   interface Grievance {
     _id: string;
     Heading: string;
@@ -188,38 +222,36 @@ export default function Page() {
     const updatedData = params.data;
     setRowData((prevData) =>
       prevData.map((row) =>
-        row.Heading === updatedData.Heading &&
-          row.Content === updatedData.Content
+        row.Heading === updatedData.Heading && row.Content === updatedData.Content
           ? updatedData
           : row
       )
     );
   };
+
   const getRowHeight = (params: any) => {
     const tags = params.data.Tags.split(",").length;
     const baseHeight = window.innerWidth < 640 ? 50 : 75;
     const tagHeight = window.innerWidth < 640 ? 2 : 3;
-    return baseHeight + (tags * tagHeight);
+    return baseHeight + tags * tagHeight;
   };
 
   function StatsCard({ title, value, color }: { title: string; value: number; color: string }) {
     return (
       <div className="flex flex-col items-center justify-center p-3 rounded-lg">
-        <h2 className="text-lg md:text-xl text-gray-600 font-semibold text-center">
-          {title}
-        </h2>
-        <span className={`text-3xl md:text-4xl mt-2 ${color} font-bold`}>
-          {value}
-        </span>
+        <h2 className="text-lg md:text-xl text-gray-600 font-semibold text-center">{title}</h2>
+        <span className={`text-3xl md:text-4xl mt-2 ${color} font-bold`}>{value}</span>
       </div>
     );
   }
 
-  const updateStats = (newStatus: "requested" | "approved" | "rejected" | "pending") => {
+  const updateStats = (
+    newStatus: "requested" | "approved" | "rejected" | "pending" | "completed"
+  ) => {
     setStats((prev) => ({
       ...prev,
-      pending: prev.pending - 1,
       [newStatus]: prev[newStatus] + 1,
+      pending: newStatus === "approved" || newStatus === "rejected" ? prev.pending - 1 : prev.pending,
     }));
   };
 
@@ -228,33 +260,35 @@ export default function Page() {
       try {
         setLoading(true);
         const grievances = await adminService.getAllGrievances();
-
         const formattedData = grievances.map((g) => ({
           _id: g._id,
           Heading: g.heading,
           Content: g.content,
           Tags: g.tags.join(", "),
-          Status: g.isRejected ? "Rejected" : g.isPending ? "Pending" : "Approved",
+          Status: g.isComplete
+            ? "Completed"
+            : g.isRejected
+            ? "Rejected"
+            : g.isPending
+            ? "Pending"
+            : "Approved",
           Votes: g.upvote_count || 0,
           CreatedAt: new Date(g.created_at).toLocaleDateString(),
         }));
-
         setRowData(formattedData);
-
-        // Calculate stats
         setStats({
           requested: grievances.length,
-          approved: grievances.filter((g) => !g.isPending && !g.isRejected).length,
+          approved: grievances.filter((g) => !g.isPending && !g.isRejected && !g.isComplete).length,
           rejected: grievances.filter((g) => g.isRejected).length,
           pending: grievances.filter((g) => g.isPending).length,
+          completed: grievances.filter((g) => g.isComplete).length,
         });
-      } catch (error) {
+      } catch {
         alert("Failed to load grievances");
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
@@ -275,6 +309,7 @@ export default function Page() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <StatsCard title="Requested" value={stats.requested} color="text-gray-800" />
                 <StatsCard title="Approved" value={stats.approved} color="text-green-700" />
+                <StatsCard title="Completed" value={stats.completed} color="text-red-700" />
                 <StatsCard title="Rejected" value={stats.rejected} color="text-red-700" />
                 <StatsCard title="Pending" value={stats.pending} color="text-amber-600" />
               </div>
@@ -284,9 +319,9 @@ export default function Page() {
               <div
                 className="ag-theme-quartz"
                 style={{
-                  height: '100%',
+                  height: "100%",
                   width: "100%",
-                  backgroundColor: "#fcffdf"
+                  backgroundColor: "#fcffdf",
                 }}
               >
                 <AgGridReact
