@@ -65,7 +65,8 @@ export default function Page() {
     const updateRowData = (updatedData: any) => {
       setRowData((prevData) =>
         prevData.map((row) =>
-          row.Heading === updatedData.Heading && row.Content === updatedData.Content
+          row.Heading === updatedData.Heading &&
+          row.Content === updatedData.Content
             ? updatedData
             : row
         )
@@ -91,10 +92,10 @@ export default function Page() {
       );
     } else if (data.Status === "Approved") {
       return (
-        <div className="flex items-center justify-center space-x-2">
+        <div className="flex items-center justify-center space-x-2 h-full">
           <button
             onClick={handleComplete}
-            className="bg-blue-700 hover:bg-blue-600 text-white font-semibold px-2 md:px-3 py-1.5 md:py-2 shadow-md transition duration-300 rounded-full text-xs md:text-sm"
+            className="bg-blue-700 hover:bg-blue-600 text-white font-semibold px-2 md:px-3 py-1.5 md:py-2 shadow-md transition duration-300 rounded-full text-xs md:text-sm my-auto"
           >
             Complete
           </button>
@@ -133,13 +134,19 @@ export default function Page() {
       setEditedTags(e.target.value);
     };
 
-    const handleBlurOrEnter = async (e: React.KeyboardEvent | React.FocusEvent) => {
+    const handleBlurOrEnter = async (
+      e: React.KeyboardEvent | React.FocusEvent
+    ) => {
       if (e.type === "blur" || (e as React.KeyboardEvent).key === "Enter") {
         setIsEditing(false);
         if (editedTags !== data.Tags) {
           try {
             const tags = editedTags.split(",").map((tag: string) => tag.trim());
-            await adminService.verifyGrievance(data._id, data.Status === "Pending", tags);
+            await adminService.verifyGrievance(
+              data._id,
+              data.Status === "Pending",
+              tags
+            );
             data.Tags = editedTags;
             api.refreshCells({ rowNodes: [node], force: true });
           } catch {
@@ -182,6 +189,7 @@ export default function Page() {
     const { data } = props;
     return (
       <div className="flex flex-col w-full h-full p-2">
+        <img src={data.related_images} alt="" className="w-10 h-10 my-2" />
         <h2 className="text-sm md:text-lg font-semibold text-gray-800 line-clamp-2">
           {data.Heading}
         </h2>
@@ -193,7 +201,12 @@ export default function Page() {
   };
 
   const [colDefs] = useState<ColDef[]>([
-    { field: "Grievance", flex: 2, minWidth: 200, cellRenderer: contentCellRenderer },
+    {
+      field: "Grievance",
+      flex: 2,
+      minWidth: 200,
+      cellRenderer: contentCellRenderer,
+    },
     { field: "Tags", flex: 1.5, minWidth: 150, cellRenderer: TagsCellRenderer },
     { field: "Status", minWidth: 100 },
     { field: "Votes", minWidth: 80 },
@@ -214,6 +227,7 @@ export default function Page() {
     Status: string;
     Votes: number;
     CreatedAt: string;
+    related_images: string[];
   }
 
   const [rowData, setRowData] = useState<Grievance[]>([]);
@@ -222,7 +236,8 @@ export default function Page() {
     const updatedData = params.data;
     setRowData((prevData) =>
       prevData.map((row) =>
-        row.Heading === updatedData.Heading && row.Content === updatedData.Content
+        row.Heading === updatedData.Heading &&
+        row.Content === updatedData.Content
           ? updatedData
           : row
       )
@@ -231,16 +246,28 @@ export default function Page() {
 
   const getRowHeight = (params: any) => {
     const tags = params.data.Tags.split(",").length;
-    const baseHeight = window.innerWidth < 640 ? 50 : 75;
+    const baseHeight = window.innerWidth < 640 ? 100 : 125;
     const tagHeight = window.innerWidth < 640 ? 2 : 3;
     return baseHeight + tags * tagHeight;
   };
 
-  function StatsCard({ title, value, color }: { title: string; value: number; color: string }) {
+  function StatsCard({
+    title,
+    value,
+    color,
+  }: {
+    title: string;
+    value: number;
+    color: string;
+  }) {
     return (
       <div className="flex flex-col items-center justify-center p-3 rounded-lg">
-        <h2 className="text-lg md:text-xl text-gray-600 font-semibold text-center">{title}</h2>
-        <span className={`text-2xl md:text-3xl mt-2 ${color} font-bold`}>{value}</span>
+        <h2 className="text-lg md:text-xl text-gray-600 font-semibold text-center">
+          {title}
+        </h2>
+        <span className={`text-3xl md:text-4xl mt-2 ${color} font-bold`}>
+          {value}
+        </span>
       </div>
     );
   }
@@ -251,7 +278,10 @@ export default function Page() {
     setStats((prev) => ({
       ...prev,
       [newStatus]: prev[newStatus] + 1,
-      pending: newStatus === "approved" || newStatus === "rejected" ? prev.pending - 1 : prev.pending,
+      pending:
+        newStatus === "approved" || newStatus === "rejected"
+          ? prev.pending - 1
+          : prev.pending,
     }));
   };
 
@@ -260,7 +290,7 @@ export default function Page() {
       try {
         setLoading(true);
         const grievances = await adminService.getAllGrievances();
-        const formattedData = grievances.map((g) => ({
+        const formattedData = grievances.map((g: any) => ({
           _id: g._id,
           Heading: g.heading,
           Content: g.content,
@@ -274,11 +304,14 @@ export default function Page() {
             : "Approved",
           Votes: g.upvote_count || 0,
           CreatedAt: new Date(g.created_at).toLocaleDateString(),
+          related_images: g.related_images || [],
         }));
         setRowData(formattedData);
         setStats({
           requested: grievances.length,
-          approved: grievances.filter((g) => !g.isPending && !g.isRejected && !g.isComplete).length,
+          approved: grievances.filter(
+            (g) => !g.isPending && !g.isRejected && !g.isComplete
+          ).length,
           rejected: grievances.filter((g) => g.isRejected).length,
           pending: grievances.filter((g) => g.isPending).length,
           completed: grievances.filter((g) => g.isComplete).length,
@@ -306,12 +339,32 @@ export default function Page() {
               <h1 className="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-4">
                 Approval Status
               </h1>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                <StatsCard title="Requested" value={stats.requested} color="text-gray-800" />
-                <StatsCard title="Approved" value={stats.approved} color="text-green-700" />
-                <StatsCard title="Completed" value={stats.completed} color="text-red-700" />
-                <StatsCard title="Rejected" value={stats.rejected} color="text-red-700" />
-                <StatsCard title="Pending" value={stats.pending} color="text-amber-600" />
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <StatsCard
+                  title="Requested"
+                  value={stats.requested}
+                  color="text-gray-800"
+                />
+                <StatsCard
+                  title="Approved"
+                  value={stats.approved}
+                  color="text-green-700"
+                />
+                <StatsCard
+                  title="Completed"
+                  value={stats.completed}
+                  color="text-red-700"
+                />
+                <StatsCard
+                  title="Rejected"
+                  value={stats.rejected}
+                  color="text-red-700"
+                />
+                <StatsCard
+                  title="Pending"
+                  value={stats.pending}
+                  color="text-amber-600"
+                />
               </div>
             </div>
 
