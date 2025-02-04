@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { UserProvider, useUser } from "@/services/userContext";
 import { uploadFiles } from "@/services/upload";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const tagOptions = [
   "Hostel",
@@ -27,6 +28,7 @@ function GrievancePageProps() {
   const [formData, setFormData] = useState({});
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -88,17 +90,18 @@ function GrievancePageProps() {
         tags: combinedData.tags,
         imagesUrl: await uploadFiles(
           selectedImages.map((image) => ({
-        file: image,
+            file: image,
           }))
         ),
       };
-
+      setLoading(true);
       // Log the form data before sending
       console.log(formDataToSend);
       await grievanceService.create(formDataToSend);
       reset();
       setSelectedImages([]);
       setSelectedTags([]);
+      setLoading(false);
       alert("Grievance submitted successfully!");
       router.push("/");
     } catch (error: any) {
@@ -318,13 +321,15 @@ function GrievancePageProps() {
                 <button
                   type="submit"
                   className="w-full bg-[#643861] text-white font-bold py-2 px-4 rounded"
+                  disabled={loading}
                 >
-                  Submit
+                  {!loading ? "Submit" : <ClipLoader size={30} color="#FFF" />}
                 </button>
                 <button
                   type="button"
                   className="w-full bg-gray-300 hover:bg-zinc-400 text-black py-2 rounded-md"
                   onClick={handleReset}
+                  disabled={loading}
                 >
                   Reset
                 </button>
@@ -333,9 +338,16 @@ function GrievancePageProps() {
           )}
         </div>
         <div className="text-center mt-4">
-        <p className="text-sm text-gray-600">
-          If you want to keep your identity hidden, use our <a href="https://forms.gle/GkzVG2uAVu33egxA7" className="text-blue-500 underline">Google Form</a>.
-        </p>
+          <p className="text-sm text-gray-600">
+            If you want to keep your identity hidden, use our{" "}
+            <a
+              href="https://forms.gle/GkzVG2uAVu33egxA7"
+              className="text-blue-500 underline"
+            >
+              Google Form
+            </a>
+            .
+          </p>
         </div>
       </div>
       <Footer />
