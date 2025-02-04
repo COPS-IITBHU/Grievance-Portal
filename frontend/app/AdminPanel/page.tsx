@@ -240,7 +240,7 @@ export default function Page() {
     return (
       <div className="flex flex-col items-center justify-center p-3 rounded-lg">
         <h2 className="text-lg md:text-xl text-gray-600 font-semibold text-center">{title}</h2>
-        <span className={`text-3xl md:text-4xl mt-2 ${color} font-bold`}>{value}</span>
+        <span className={`text-2xl md:text-3xl mt-2 ${color} font-bold`}>{value}</span>
       </div>
     );
   }
@@ -306,7 +306,7 @@ export default function Page() {
               <h1 className="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-4">
                 Approval Status
               </h1>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                 <StatsCard title="Requested" value={stats.requested} color="text-gray-800" />
                 <StatsCard title="Approved" value={stats.approved} color="text-green-700" />
                 <StatsCard title="Completed" value={stats.completed} color="text-red-700" />
