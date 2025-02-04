@@ -8,6 +8,7 @@ import { jwtDecode } from "jwt-decode";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { User, UserProvider, useUser } from "@/services/userContext";
+import { Grievance } from "@/types/grievance";
 
 export interface FormData {
   name: string;
