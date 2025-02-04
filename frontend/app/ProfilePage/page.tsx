@@ -26,6 +26,7 @@ function ProfilePageProps() {
   const [userEmail, setUserEmail] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
   const [loading, setLoading] = useState(true);
+   const [userGrievances, setUserGrievances] = useState<Grievance[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -124,6 +125,21 @@ function ProfilePageProps() {
   }, [router]);
 
   useEffect(() => {
+    const fetchUserGrievances = async () => {
+      if (user?._id) {
+        try {
+          const grievances = await authService.getUserGrievances(user._id);
+          setUserGrievances(grievances);
+        } catch (error) {
+          console.error("Error fetching grievances:", error);
+        }
+      }
+    };
+
+    fetchUserGrievances();
+  }, [user?._id]);
+
+  useEffect(() => {
     if (isEditing && user) {
       setValue("name", user.name);
       setValue("rollNumber", user.rollNumber);
@@ -175,7 +191,7 @@ function ProfilePageProps() {
       <div className="min-h-screen my-2 md:my-4 p-3 md:py-6 bg-gray-50">
         <div className="max-w-4xl mx-auto space-y-4 md:space-y-6">
           <div className="bg-[#fcffdf] rounded-lg p-4 md:p-6 shadow-md">
-              <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0">
               <div className="flex flex-col md:flex-row items-center md:space-x-4">
                 {profilePicture ? (
                   <Image
@@ -183,7 +199,7 @@ function ProfilePageProps() {
                     alt="Profile"
                     height={56}
                     width={56}
-                    className="rounded-full w-14 h-14 md:w-16 md:h-16"
+                    className="rounded-full w-14 h-14 md:w-16 md:h-16 border-2 border-gray-500"
                   />
                 ) : (
                   <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#643861] flex items-center justify-center">
@@ -194,7 +210,7 @@ function ProfilePageProps() {
                 )}
                 <div>
                   <h2 className="text-xl md:text-2xl font-bold text-[#643861]">
-                    My Profile
+                    Your Profile
                   </h2>
                   <p className="text-sm md:text-base text-gray-600">{userEmail}</p>
                 </div>
@@ -202,7 +218,7 @@ function ProfilePageProps() {
               <div className="flex justify-center md:justify-end space-x-2 md:space-x-4">
                 <button
                   onClick={() => setIsEditing(!isEditing)}
-                  className="bg-[#643861] hover:bg-blue-600 text-white py-1.5 md:py-2 px-3 md:px-4 rounded-md text-sm md:text-base transition-colors"
+                  className="bg-[#643861] hover:bg-[#d35c13] text-white py-1.5 md:py-2 px-3 md:px-4 rounded-md text-sm md:text-base transition-colors cursor-pointer"
                 >
                   {isEditing ? "Cancel" : "Edit"}
                 </button>
@@ -211,7 +227,7 @@ function ProfilePageProps() {
                     logout();
                     router.push("/loginPage");
                   }}
-                  className="bg-[#643861] hover:bg-red-600 text-white py-1.5 md:py-2 px-3 md:px-4 rounded-md text-sm md:text-base transition-colors"
+                  className="bg-[#643861] hover:bg-red-700 text-white py-1.5 md:py-2 px-3 md:px-4 rounded-md text-sm md:text-base transition-colors cursor-pointer"
                 >
                   Logout
                 </button>
@@ -371,7 +387,7 @@ function ProfilePageProps() {
                 <div className="flex justify-end mt-4 md:mt-6">
                   <button
                     type="submit"
-                    className="bg-[#643861] hover:bg-[#d35c13] text-white py-1.5 md:py-2 px-6 md:px-8 rounded-md text-sm md:text-base transition-colors"
+                    className="bg-[#643861] hover:bg-[#d35c13] text-white py-1.5 md:py-2 px-6 md:px-8 rounded-md text-sm md:text-base transition-colors cursor-pointer"
                   >
                     Update Profile
                   </button>
@@ -441,20 +457,56 @@ function ProfilePageProps() {
             </div>
           )}
 
-          <div className="bg-[#fcffdf] rounded-lg p-4 md:p-6 shadow-md mb-20 md:mb-52 pb-10">
-            <h3 className="text-lg md:text-xl font-bold mb-4 md:mb-6 text-[#643861]">
-              My Grievances
-            </h3>
-            <p className="text-gray-500 text-center text-sm md:text-base">
-              No grievances found.
-              <button
-                onClick={() => router.push("/grievancePage")}
-                className="text-[#643861] hover:text-[#d35c13] ml-2 text-sm md:text-base"
+            <div className="bg-[#fcffdf] rounded-lg p-4 md:p-6 shadow-md mb-20 md:mb-52 pb-10">
+    <h3 className="text-lg md:text-xl font-bold mb-4 md:mb-6 text-[#643861]">
+      My Grievances
+    </h3>
+    <div className="space-y-4">
+      {userGrievances.length === 0 ? (
+        <p className="text-gray-800 text-center text-sm md:text-base">
+          No grievances found.
+        </p>
+      ) : (
+        <div className="grid gap-4">
+          {userGrievances.map((grievance) => (
+            <div
+              key={grievance._id}
+              className="flex items-center justify-between p-4 bg-white rounded-lg shadow-xl border border-[#643861]"
+            >
+              <h4 className="font-medium text-gray-800">{grievance.heading}</h4>
+              <span
+                className={`px-3 py-1 rounded-full text-sm ${
+                  grievance.isComplete
+                    ? "bg-green-100 text-green-800"
+                    : grievance.isRejected
+                    ? "bg-red-100 text-red-800"
+                    : grievance.isPending
+                    ? "bg-yellow-100 text-yellow-700"
+                    : "bg-blue-100 text-blue-700"
+                }`}
               >
-                File a new grievance
-              </button>
-            </p>
-          </div>
+                {grievance.isComplete
+                  ? "Completed"
+                  : grievance.isRejected
+                  ? "Rejected"
+                  : grievance.isPending
+                  ? "Pending"
+                  : "Approved"}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={() => router.push("/grievancePage")}
+          className="bg-[#643861] hover:bg-[#d35c13] text-white py-2 px-4 rounded-md transition-colors cursor-pointer"
+        >
+          Make a new Grievance
+        </button>
+      </div>
+    </div>
+  </div>
         </div>
       </div>
       <Footer />

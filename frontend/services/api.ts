@@ -150,6 +150,26 @@ const authService = {
       throw error;
     }
   },
+  // In api.ts, add to authService
+  getUserGrievances: async (userId: string): Promise<Grievance[]> => {
+  try {
+    const token = authService.getToken();
+    if (!token) {
+      throw new Error("Please log in to view grievances");
+    }
+    const response = await api.get(`/user/${userId}/grievances`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw error;
+  }
+},
 };
 
 const adminService = {
