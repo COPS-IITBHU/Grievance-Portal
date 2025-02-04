@@ -170,6 +170,13 @@ const adminService = {
     return response.data;
   },
 
+  markGrievanceComplete: async (id: string): Promise<Grievance> => {
+    const response = await api.put(`/admin/${id}/completed`, {
+      isComplete: true,
+    });
+    return response.data;
+  },
+
   updateProgress: async (id: string, images: File[]): Promise<Grievance> => {
     const formData = new FormData();
     images.forEach((image) => {
